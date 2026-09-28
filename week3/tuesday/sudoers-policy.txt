@@ -1,0 +1,13 @@
+# /etc/sudoers.d/amina : operational access for the KijaniKiosk on-call engineer
+Cmnd_Alias KK_STATUS  = /usr/bin/systemctl --no-pager status kk-api, \
+                        /usr/bin/systemctl --no-pager status kk-payments, \
+                        /usr/bin/systemctl --no-pager status kk-logs
+Cmnd_Alias KK_RESTART = /usr/bin/systemctl restart kk-api, \
+                        /usr/bin/systemctl restart kk-payments, \
+                        /usr/bin/systemctl restart kk-logs
+Cmnd_Alias KK_LOGS    = /usr/bin/journalctl --no-pager -u kk-api, \
+                        /usr/bin/journalctl --no-pager -u kk-payments, \
+                        /usr/bin/journalctl --no-pager -u kk-logs
+
+amina ALL=(root) NOPASSWD: KK_STATUS, KK_RESTART, KK_LOGS
+amina ALL=(root) NOPASSWD: sudoedit /etc/nginx/nginx.conf
