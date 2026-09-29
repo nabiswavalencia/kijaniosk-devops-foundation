@@ -1,0 +1,46 @@
+[2026-09-28T14:31:21] INFO  Starting KijaniKiosk provisioning on ip-172-31-9-45
+[2026-09-28T14:31:21] INFO  === Phase 1: Packages ===
+[2026-09-28T14:31:28] INFO  Already at pinned version: nginx 1.18.0-6ubuntu14.21
+[2026-09-28T14:31:28] INFO  Already at pinned version: nodejs 20.20.2-1nodesource1
+[2026-09-28T14:31:28] OK    nginx 1.18.0-6ubuntu14.21 and nodejs 20.20.2-1nodesource1 installed and held
+[2026-09-28T14:31:28] INFO  === Phase 2: Service accounts ===
+[2026-09-28T14:31:28] INFO  Already exists: kk-api
+[2026-09-28T14:31:28] INFO  Already exists: kk-payments
+[2026-09-28T14:31:28] INFO  Already exists: kk-logs
+[2026-09-28T14:31:28] OK    Service accounts ready
+[2026-09-28T14:31:28] INFO  === Phase 3: Directories, modes, ACLs ===
+[2026-09-28T14:31:28] OK    Directories, modes and ACLs applied
+[2026-09-28T14:31:28] INFO  === Phase 4: systemd unit ===
+[2026-09-28T14:31:29] OK    kk-api.service written and enabled (not started)
+[2026-09-28T14:31:29] INFO  === Phase 5: Firewall ===
+[2026-09-28T14:31:30] INFO  Active firewall rules:
+Status: active
+
+     To                         Action      From
+     --                         ------      ----
+[ 1] 22/tcp                     ALLOW IN    Anywhere                   # SSH
+[ 2] 80/tcp                     ALLOW IN    Anywhere                   # HTTP
+[ 3] 22/tcp (v6)                ALLOW IN    Anywhere (v6)              # SSH
+[ 4] 80/tcp (v6)                ALLOW IN    Anywhere (v6)              # HTTP
+
+[2026-09-28T14:31:30] OK    Firewall configured: deny incoming, allow 22 and 80
+[2026-09-28T14:31:30] INFO  === Phase 6: Verification ===
+[2026-09-28T14:31:30] OK    PASS: account exists: kk-api
+[2026-09-28T14:31:30] OK    PASS: account exists: kk-payments
+[2026-09-28T14:31:30] OK    PASS: account exists: kk-logs
+[2026-09-28T14:31:30] OK    PASS: directory exists: api
+[2026-09-28T14:31:30] OK    PASS: directory exists: payments
+[2026-09-28T14:31:30] OK    PASS: directory exists: logs
+[2026-09-28T14:31:30] OK    PASS: directory exists: config
+[2026-09-28T14:31:30] OK    PASS: directory exists: scripts
+[2026-09-28T14:31:30] OK    PASS: directory exists: shared/logs
+[2026-09-28T14:31:30] OK    PASS: no SUID files in app tree
+[2026-09-28T14:31:30] OK    PASS: nginx held
+[2026-09-28T14:31:30] OK    PASS: nodejs held
+[2026-09-28T14:31:30] OK    PASS: kk-api.service enabled
+[2026-09-28T14:31:30] OK    PASS: ufw is active
+[2026-09-28T14:31:30] OK    PASS: ufw default deny incoming
+[2026-09-28T14:31:30] OK    PASS: ufw allows SSH (22)
+[2026-09-28T14:31:30] OK    PASS: ufw allows HTTP (80)
+[2026-09-28T14:31:30] OK    All checks passed
+[2026-09-28T14:31:30] OK    Provisioning complete. Server is in a known state.

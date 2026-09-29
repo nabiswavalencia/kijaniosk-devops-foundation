@@ -1,0 +1,24 @@
+== enabled? ==
+enabled
+== status ==
+○ kk-api.service - KijaniKiosk API Service
+     Loaded: loaded (/etc/systemd/system/kk-api.service; enabled; vendor preset: enabled)
+     Active: inactive (dead) since Mon 2026-09-28 14:23:28 UTC; 30s ago
+    Process: 379 ExecStart=/usr/bin/node /opt/kijanikiosk/api/server.js (code=exited, status=0/SUCCESS)
+   Main PID: 379 (code=exited, status=0/SUCCESS)
+== holds ==
+nginx
+nodejs
+== ufw ==
+Status: active
+Logging: on (low)
+Default: deny (incoming), allow (outgoing), disabled (routed)
+New profiles: skip
+
+To                         Action      From
+--                         ------      ----
+22/tcp                     ALLOW IN    Anywhere                   # SSH
+80/tcp                     ALLOW IN    Anywhere                   # HTTP
+22/tcp (v6)                ALLOW IN    Anywhere (v6)              # SSH
+80/tcp (v6)                ALLOW IN    Anywhere (v6)              # HTTP
+
