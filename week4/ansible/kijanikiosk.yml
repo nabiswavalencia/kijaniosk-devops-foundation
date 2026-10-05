@@ -1,0 +1,319 @@
+---
+# kijanikiosk.yml: Week 3 kijanikiosk-provision.sh expressed as Ansible tasks.
+# Every server gets the shared baseline (packages, all accounts, directories, ACLs,
+# firewall, journal, logrotate). host_vars decide which single service each server runs.
+
+- name: Configure KijaniKiosk servers to the Week 3 standard
+  hosts: kijanikiosk
+  become: true
+  gather_facts: true
+
+  handlers:
+    # Handlers run in the order listed here, not the order they were notified.
+    - name: Reload systemd
+      ansible.builtin.systemd:
+        daemon_reload: true
+
+    - name: Restart service
+      ansible.builtin.systemd:
+        name: "{{ service_name }}"
+        state: restarted
+
+    - name: Restart journald
+      ansible.builtin.systemd:
+        name: systemd-journald
+        state: restarted
+
+  tasks:
+    # ------------------------------------------------------------------
+    # Phase 1: packages
+    # ------------------------------------------------------------------
+    - name: Phase 1 | Base packages
+      ansible.builtin.apt:
+        name: "{{ base_packages }}"
+        state: present
+        update_cache: true
+        cache_valid_time: 3600
+        install_recommends: false
+
+    - name: Phase 1 | Keyring directory
+      ansible.builtin.file:
+        path: /etc/apt/keyrings
+        state: directory
+        owner: root
+        group: root
+        mode: "0755"
+
+    - name: Phase 1 | NodeSource signing key
+      ansible.builtin.get_url:
+        url: https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key
+        dest: /etc/apt/keyrings/nodesource.asc
+        owner: root
+        group: root
+        mode: "0644"
+
+    - name: Phase 1 | NodeSource repository
+      ansible.builtin.apt_repository:
+        repo: "deb [signed-by=/etc/apt/keyrings/nodesource.asc] https://deb.nodesource.com/node_{{ node_major }}.x nodistro main"
+        filename: nodesource
+        state: present
+
+    - name: Phase 1 | nginx and nodejs at pinned versions
+      ansible.builtin.apt:
+        name:
+          - "nginx={{ nginx_version }}"
+          - "nodejs={{ node_version }}"
+        state: present
+        install_recommends: false
+
+    - name: Phase 1 | Hold pinned packages
+      ansible.builtin.dpkg_selections:
+        name: "{{ item }}"
+        selection: hold
+      loop: "{{ pinned_packages }}"
+
+    # ------------------------------------------------------------------
+    # Phase 2: service accounts
+    # ------------------------------------------------------------------
+    - name: Phase 2 | Shared application group
+      ansible.builtin.group:
+        name: "{{ app_group }}"
+        system: true
+
+    - name: Phase 2 | Per-service private groups
+      ansible.builtin.group:
+        name: "{{ item }}"
+        system: true
+      loop: "{{ service_accounts }}"
+
+    - name: Phase 2 | Service accounts (no login, no home)
+      ansible.builtin.user:
+        name: "{{ item }}"
+        group: "{{ item }}"
+        groups: "{{ app_group }}"
+        append: true
+        system: true
+        create_home: false
+        home: /nonexistent
+        shell: /usr/sbin/nologin
+        comment: "KijaniKiosk {{ item | replace('kk-', '') }}"
+      loop: "{{ service_accounts }}"
+
+    - name: Phase 2 | Operator account in the application group
+      ansible.builtin.user:
+        name: "{{ operator_user }}"
+        groups: "{{ app_group }}"
+        append: true
+
+    # ------------------------------------------------------------------
+    # Phase 3: directories, modes, ACLs (modes first, ACLs second)
+    # ------------------------------------------------------------------
+    - name: Phase 3 | Directories with owners and modes
+      ansible.builtin.file:
+        path: "{{ item.path }}"
+        state: directory
+        owner: "{{ item.owner }}"
+        group: "{{ item.group }}"
+        mode: "{{ item.mode }}"
+      loop: "{{ kk_directories }}"
+      loop_control:
+        label: "{{ item.path }}"
+
+    - name: Phase 3 | Environment files (root-owned, group-readable)
+      ansible.builtin.template:
+        src: service.env.j2
+        dest: "{{ kk_base }}/config/{{ item.key }}"
+        owner: root
+        group: "{{ app_group }}"
+        mode: "0640"
+      loop: "{{ service_env | dict2items }}"
+      loop_control:
+        label: "{{ item.key }}"
+      notify: Restart service
+
+    - name: Phase 3 | shared/logs named ACL entries (access and default)
+      ansible.posix.acl:
+        path: "{{ kk_base }}/shared/logs"
+        etype: user
+        entity: "{{ item.0.entity }}"
+        permissions: "{{ item.0.permissions }}"
+        default: "{{ item.1 }}"
+        state: present
+      loop: "{{ shared_logs_acl | product([false, true]) | list }}"
+      loop_control:
+        label: "{{ item.0.entity }} {{ item.0.permissions }} default={{ item.1 }}"
+
+    - name: Phase 3 | shared/logs explicit ACL mask (access and default)
+      ansible.posix.acl:
+        path: "{{ kk_base }}/shared/logs"
+        etype: mask
+        permissions: rwx
+        default: "{{ item }}"
+        state: present
+      loop: [false, true]
+
+    # ------------------------------------------------------------------
+    # Phase 4: application and systemd unit
+    # ------------------------------------------------------------------
+    - name: Phase 4 | Placeholder application
+      ansible.builtin.copy:
+        dest: "{{ kk_base }}/{{ service_code_dir }}/{{ service_entry }}"
+        content: |
+          require('http').createServer((q,s)=>s.end('ok')).listen(process.env.PORT,'127.0.0.1');
+        owner: "{{ service_name }}"
+        group: "{{ service_name }}"
+        mode: "0640"
+      notify: Restart service
+
+    - name: Phase 4 | systemd unit from template
+      ansible.builtin.template:
+        src: kk-service.service.j2
+        dest: "/etc/systemd/system/{{ service_name }}.service"
+        owner: root
+        group: root
+        mode: "0644"
+      notify:
+        - Reload systemd
+        - Restart service
+
+    - name: Phase 4 | Apply pending unit and config changes now
+      ansible.builtin.meta: flush_handlers
+
+    - name: Phase 4 | Service enabled and running
+      ansible.builtin.systemd:
+        name: "{{ service_name }}"
+        enabled: true
+        state: started
+
+    # ------------------------------------------------------------------
+    # Phase 5: firewall (allow rules before enable, so SSH is never cut)
+    # ------------------------------------------------------------------
+    - name: Phase 5 | Default policies
+      community.general.ufw:
+        default: "{{ item.policy }}"
+        direction: "{{ item.direction }}"
+      loop:
+        - { policy: deny, direction: incoming }
+        - { policy: allow, direction: outgoing }
+
+    - name: Phase 5 | Rules
+      community.general.ufw:
+        rule: "{{ item.rule }}"
+        from_ip: "{{ item.from_ip | default('any') }}"
+        to_port: "{{ item.port }}"
+        proto: tcp
+        interface: "{{ item.interface | default(omit) }}"
+        direction: "{{ 'in' if item.interface is defined else omit }}"
+        comment: "{{ item.comment }}"
+      loop:
+        - { rule: allow, from_ip: "{{ admin_cidr }}", port: "22", comment: "SSH from operator network (Ansible host)" }
+        - { rule: allow, from_ip: "{{ monitoring_cidr }}", port: "22", comment: "SSH from monitoring/admin subnet" }
+        - { rule: allow, from_ip: "{{ monitoring_cidr }}", port: "80", comment: "HTTP from monitoring subnet" }
+        - { rule: allow, from_ip: "{{ monitoring_cidr }}", port: "{{ service_port }}", comment: "{{ service_name }} health check from monitoring subnet" }
+        - { rule: allow, interface: lo, port: "{{ service_port }}", comment: "{{ service_name }} loopback for nginx proxy" }
+        - { rule: deny, port: "{{ service_port }}", comment: "{{ service_name }} internal port, no external access" }
+      loop_control:
+        label: "{{ item.rule }} {{ item.port }} {{ item.comment }}"
+
+    - name: Phase 5 | Enable firewall
+      community.general.ufw:
+        state: enabled
+
+    # ------------------------------------------------------------------
+    # Phase 6: journal persistence
+    # ------------------------------------------------------------------
+    - name: Phase 6 | Persistent journal directory
+      ansible.builtin.file:
+        path: /var/log/journal
+        state: directory
+        owner: root
+        group: systemd-journal
+        mode: "2755"
+
+    - name: Phase 6 | journald drop-in directory
+      ansible.builtin.file:
+        path: /etc/systemd/journald.conf.d
+        state: directory
+        owner: root
+        group: root
+        mode: "0755"
+
+    - name: Phase 6 | journald settings
+      ansible.builtin.template:
+        src: journald-kijanikiosk.conf.j2
+        dest: /etc/systemd/journald.conf.d/kijanikiosk.conf
+        owner: root
+        group: root
+        mode: "0644"
+      notify: Restart journald
+
+    # ------------------------------------------------------------------
+    # Phase 7: log rotation
+    # ------------------------------------------------------------------
+    - name: Phase 7 | logrotate config (validated before it is installed)
+      ansible.builtin.template:
+        src: logrotate-kijanikiosk.j2
+        dest: /etc/logrotate.d/kijanikiosk
+        owner: root
+        group: root
+        mode: "0644"
+        validate: logrotate --debug %s
+
+    - name: Phase 7 | Apply journald change before verification
+      ansible.builtin.meta: flush_handlers
+
+    # ------------------------------------------------------------------
+    # Phase 8: health and verification (read-only, never reports a change)
+    # ------------------------------------------------------------------
+    - name: Phase 8 | Service answers on its port
+      ansible.builtin.uri:
+        url: "http://127.0.0.1:{{ service_port }}/"
+        return_content: true
+      register: health
+      retries: 5
+      delay: 2
+      until: health.status == 200
+
+    - name: Phase 8 | Health file (no timestamp, so a healthy re-run changes nothing)
+      ansible.builtin.template:
+        src: last-provision.json.j2
+        dest: "{{ kk_base }}/health/last-provision.json"
+        owner: root
+        group: "{{ app_group }}"
+        mode: "0640"
+
+    - name: Phase 8 | Access model checks
+      ansible.builtin.command:
+        argv: "{{ item.argv }}"
+      become: true
+      become_user: "{{ item.user }}"
+      register: access_check
+      changed_when: false
+      failed_when: access_check.rc != item.expect_rc
+      loop:
+        - { desc: "kk-api can write shared/logs", user: kk-api, argv: [test, -w, "{{ kk_base }}/shared/logs"], expect_rc: 0 }
+        - { desc: "kk-payments cannot write shared/logs", user: kk-payments, argv: [test, -w, "{{ kk_base }}/shared/logs"], expect_rc: 1 }
+        - { desc: "kk-payments can read shared/logs", user: kk-payments, argv: [test, -r, "{{ kk_base }}/shared/logs"], expect_rc: 0 }
+        - { desc: "kk-api cannot read payments code", user: kk-api, argv: [test, -r, "{{ kk_base }}/payments"], expect_rc: 1 }
+        - { desc: "kk-payments cannot read api code", user: kk-payments, argv: [test, -r, "{{ kk_base }}/api"], expect_rc: 1 }
+        - { desc: "kk-api can read health file", user: kk-api, argv: [test, -r, "{{ kk_base }}/health/last-provision.json"], expect_rc: 0 }
+      loop_control:
+        label: "{{ item.desc }}"
+
+    - name: Phase 8 | Service account can read its own env files (Challenge D)
+      ansible.builtin.command:
+        argv: [cat, "{{ kk_base }}/config/{{ item }}"]
+      become: true
+      become_user: "{{ service_name }}"
+      changed_when: false
+      loop: "{{ service_env | list }}"
+
+    - name: Phase 8 | systemd security score
+      ansible.builtin.command:
+        argv: [systemd-analyze, security, "{{ service_name }}.service", --no-pager]
+      register: security_score
+      changed_when: false
+
+    - name: Phase 8 | Report score
+      ansible.builtin.debug:
+        msg: "{{ service_name }}: {{ security_score.stdout_lines | last }}"
