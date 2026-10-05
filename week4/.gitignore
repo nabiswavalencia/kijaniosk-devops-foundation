@@ -3,3 +3,4 @@
 *.tfstate.*
 minio-data/
 *.retry
+tfplan

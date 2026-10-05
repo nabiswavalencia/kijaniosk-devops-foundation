@@ -1,0 +1,23 @@
+---
+service_name: kk-payments
+service_description: KijaniKiosk Payments Service
+service_port: 3001
+service_code_dir: payments
+service_entry: processor.js
+service_env:
+  db.env:
+    DB_HOST: 127.0.0.1
+    DB_NAME: kijanikiosk
+  payments-api.env:
+    PAYMENTS_API_URL: https://sandbox.payments.invalid
+    PAYMENTS_API_KEY: CHANGE_ME   # placeholder; a real key belongs in Ansible Vault
+# Week 3 kk-payments-hardening.md: common set plus five payments-only directives (score 2.5).
+# SystemCallFilter=@system-service and MemoryDenyWriteExecute=true were tested in Week 3
+# and rejected (service failed to start / V8 JIT crash), so they are deliberately absent.
+payments_extra_hardening:
+  - ProtectProc=invisible
+  - ProcSubset=pid
+  - PrivateUsers=true
+  - IPAddressDeny=any
+  - IPAddressAllow=localhost
+service_hardening: "{{ common_hardening + payments_extra_hardening }}"
