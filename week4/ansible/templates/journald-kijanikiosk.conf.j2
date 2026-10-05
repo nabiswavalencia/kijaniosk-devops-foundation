@@ -1,0 +1,6 @@
+# Managed by Ansible for {{ inventory_hostname }}.
+[Journal]
+Storage=persistent
+Compress=yes
+SystemMaxUse={{ journal_max_use }}
+SystemMaxFileSize={{ journal_max_file_size }}

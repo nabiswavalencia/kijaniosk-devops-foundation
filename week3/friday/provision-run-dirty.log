@@ -1,0 +1,144 @@
+[2026-09-29T09:03:33] INFO  Starting KijaniKiosk provisioning on ip-172-31-9-45
+[2026-09-29T09:03:33] INFO  === Phase 1: Packages ===
+[2026-09-29T09:03:39] INFO  Already at pinned version: nginx 1.18.0-6ubuntu14.21
+[2026-09-29T09:03:39] INFO  Already at pinned version: nodejs 20.20.2-1nodesource1
+[2026-09-29T09:03:39] OK    Packages ready: nginx 1.18.0-6ubuntu14.21, nodejs 20.20.2-1nodesource1 (both held)
+[2026-09-29T09:03:39] INFO  === Phase 2: Service accounts ===
+[2026-09-29T09:03:39] INFO  Already exists: kk-api
+usermod: no changes
+[2026-09-29T09:03:40] INFO  Already exists: kk-payments
+usermod: no changes
+[2026-09-29T09:03:40] INFO  Already exists: kk-logs
+usermod: no changes
+[2026-09-29T09:03:40] OK    Service accounts converged
+[2026-09-29T09:03:40] INFO  === Phase 3: Directories, modes, ACLs ===
+[2026-09-29T09:03:40] OK    Directories, modes and ACLs applied
+[2026-09-29T09:03:40] INFO  === Phase 4: systemd units ===
+[2026-09-29T09:03:40] INFO  App file already present: /opt/kijanikiosk/api/server.js
+[2026-09-29T09:03:40] INFO  App file already present: /opt/kijanikiosk/payments/processor.js
+[2026-09-29T09:03:40] INFO  App file already present: /opt/kijanikiosk/logs/aggregator.js
+[2026-09-29T09:03:43] OK    Units written, enabled and started
+[2026-09-29T09:03:43] INFO  === Phase 5: Firewall ===
+[2026-09-29T09:03:44] INFO  Active firewall rules:
+Status: active
+
+     To                         Action      From
+     --                         ------      ----
+[ 1] 22/tcp                     ALLOW IN    10.0.1.0/24                # SSH from monitoring/admin subnet
+[ 2] 80/tcp                     ALLOW IN    10.0.1.0/24                # HTTP from monitoring subnet
+[ 3] 3001/tcp                   ALLOW IN    10.0.1.0/24                # kk-payments health check from monitoring subnet
+[ 4] 22/tcp                     ALLOW IN    196.96.66.118              # SSH operator access, lab exception - see integration-notes.md
+[ 5] 3001/tcp on lo             ALLOW IN    Anywhere                   # kk-payments loopback for nginx proxy
+[ 6] 3001/tcp                   DENY IN     Anywhere                   # kk-payments internal port, no external access
+[ 7] 3001/tcp (v6) on lo        ALLOW IN    Anywhere (v6)              # kk-payments loopback for nginx proxy
+[ 8] 3001/tcp (v6)              DENY IN     Anywhere (v6)              # kk-payments internal port, no external access
+
+[2026-09-29T09:03:44] OK    Firewall configured to express intent, not history
+[2026-09-29T09:03:44] INFO  === Phase 6: Verification (phases 1-5) ===
+[2026-09-29T09:03:44] OK    PASS: package held: nginx
+[2026-09-29T09:03:44] OK    PASS: package held: nodejs
+[2026-09-29T09:03:44] OK    PASS: nginx at pinned version
+[2026-09-29T09:03:44] OK    PASS: nodejs at pinned version
+[2026-09-29T09:03:44] OK    PASS: account exists: kk-api
+[2026-09-29T09:03:44] OK    PASS: nologin shell: kk-api
+[2026-09-29T09:03:44] OK    PASS: member of kijanikiosk: kk-api
+[2026-09-29T09:03:44] OK    PASS: unit enabled: kk-api
+[2026-09-29T09:03:44] OK    PASS: unit active: kk-api
+[2026-09-29T09:03:45] OK    PASS: account exists: kk-payments
+[2026-09-29T09:03:45] OK    PASS: nologin shell: kk-payments
+[2026-09-29T09:03:45] OK    PASS: member of kijanikiosk: kk-payments
+[2026-09-29T09:03:45] OK    PASS: unit enabled: kk-payments
+[2026-09-29T09:03:45] OK    PASS: unit active: kk-payments
+[2026-09-29T09:03:45] OK    PASS: account exists: kk-logs
+[2026-09-29T09:03:45] OK    PASS: nologin shell: kk-logs
+[2026-09-29T09:03:45] OK    PASS: member of kijanikiosk: kk-logs
+[2026-09-29T09:03:45] OK    PASS: unit enabled: kk-logs
+[2026-09-29T09:03:45] OK    PASS: unit active: kk-logs
+[2026-09-29T09:03:45] OK    PASS: directory exists: api
+[2026-09-29T09:03:45] OK    PASS: directory exists: payments
+[2026-09-29T09:03:45] OK    PASS: directory exists: logs
+[2026-09-29T09:03:45] OK    PASS: directory exists: config
+[2026-09-29T09:03:45] OK    PASS: directory exists: scripts
+[2026-09-29T09:03:45] OK    PASS: directory exists: shared/logs
+[2026-09-29T09:03:45] OK    PASS: directory exists: health
+[2026-09-29T09:03:45] OK    PASS: base directory mode 755
+[2026-09-29T09:03:45] OK    PASS: config directory mode 750
+[2026-09-29T09:03:45] OK    PASS: shared/logs mode 2770 (SGID)
+[2026-09-29T09:03:45] OK    PASS: no SUID or SGID files in app tree
+[2026-09-29T09:03:45] OK    PASS: ACL: kk-api rwx on shared/logs
+[2026-09-29T09:03:45] OK    PASS: ACL: kk-payments r-x on shared/logs
+[2026-09-29T09:03:45] OK    PASS: default ACL: kk-api
+[2026-09-29T09:03:45] OK    PASS: default ACL: kk-payments
+[2026-09-29T09:03:45] OK    PASS: ACL mask is rwx
+[2026-09-29T09:03:45] OK    PASS: kk-api can write shared/logs
+[2026-09-29T09:03:45] OK    PASS: kk-payments cannot write shared/logs
+[2026-09-29T09:03:45] OK    PASS: kk-api can read config
+[2026-09-29T09:03:45] OK    PASS: kk-api cannot read payments code
+[2026-09-29T09:03:45] OK    PASS: kk-payments cannot read api code
+[2026-09-29T09:03:45] OK    PASS: firewall: SSH allowed from monitoring subnet
+[2026-09-29T09:03:45] OK    PASS: firewall: HTTP allowed from monitoring subnet
+[2026-09-29T09:03:45] OK    PASS: firewall: 3001 allowed from monitoring subnet
+[2026-09-29T09:03:45] OK    PASS: firewall: 3001 denied externally
+[2026-09-29T09:03:45] OK    PASS: ufw is active
+[2026-09-29T09:03:45] INFO  === Phase 7: Journal persistence and log rotation ===
+[2026-09-29T09:03:45] OK    Journal persistent (500M cap), logrotate configured (daily, 14 kept)
+[2026-09-29T09:03:45] INFO  === Phase 8: Health checks and final verification ===
+[2026-09-29T09:03:47] INFO  Health file: {"timestamp":"2026-09-29T09:03:47+00:00","kk-api":"ok","kk-payments":"ok"}
+[2026-09-29T09:03:47] OK    PASS: health file exists and is not empty
+[2026-09-29T09:03:47] OK    PASS: health file readable by kk-api (group)
+[2026-09-29T09:03:47] OK    PASS: package held: nginx
+[2026-09-29T09:03:47] OK    PASS: package held: nodejs
+[2026-09-29T09:03:47] OK    PASS: nginx at pinned version
+[2026-09-29T09:03:47] OK    PASS: nodejs at pinned version
+[2026-09-29T09:03:47] OK    PASS: account exists: kk-api
+[2026-09-29T09:03:47] OK    PASS: nologin shell: kk-api
+[2026-09-29T09:03:47] OK    PASS: member of kijanikiosk: kk-api
+[2026-09-29T09:03:47] OK    PASS: unit enabled: kk-api
+[2026-09-29T09:03:47] OK    PASS: unit active: kk-api
+[2026-09-29T09:03:47] OK    PASS: account exists: kk-payments
+[2026-09-29T09:03:47] OK    PASS: nologin shell: kk-payments
+[2026-09-29T09:03:47] OK    PASS: member of kijanikiosk: kk-payments
+[2026-09-29T09:03:47] OK    PASS: unit enabled: kk-payments
+[2026-09-29T09:03:47] OK    PASS: unit active: kk-payments
+[2026-09-29T09:03:47] OK    PASS: account exists: kk-logs
+[2026-09-29T09:03:47] OK    PASS: nologin shell: kk-logs
+[2026-09-29T09:03:47] OK    PASS: member of kijanikiosk: kk-logs
+[2026-09-29T09:03:47] OK    PASS: unit enabled: kk-logs
+[2026-09-29T09:03:47] OK    PASS: unit active: kk-logs
+[2026-09-29T09:03:47] OK    PASS: directory exists: api
+[2026-09-29T09:03:47] OK    PASS: directory exists: payments
+[2026-09-29T09:03:47] OK    PASS: directory exists: logs
+[2026-09-29T09:03:47] OK    PASS: directory exists: config
+[2026-09-29T09:03:47] OK    PASS: directory exists: scripts
+[2026-09-29T09:03:47] OK    PASS: directory exists: shared/logs
+[2026-09-29T09:03:47] OK    PASS: directory exists: health
+[2026-09-29T09:03:47] OK    PASS: base directory mode 755
+[2026-09-29T09:03:47] OK    PASS: config directory mode 750
+[2026-09-29T09:03:47] OK    PASS: shared/logs mode 2770 (SGID)
+[2026-09-29T09:03:47] OK    PASS: no SUID or SGID files in app tree
+[2026-09-29T09:03:47] OK    PASS: ACL: kk-api rwx on shared/logs
+[2026-09-29T09:03:47] OK    PASS: ACL: kk-payments r-x on shared/logs
+[2026-09-29T09:03:47] OK    PASS: default ACL: kk-api
+[2026-09-29T09:03:47] OK    PASS: default ACL: kk-payments
+[2026-09-29T09:03:47] OK    PASS: ACL mask is rwx
+[2026-09-29T09:03:47] OK    PASS: kk-api can write shared/logs
+[2026-09-29T09:03:48] OK    PASS: kk-payments cannot write shared/logs
+[2026-09-29T09:03:48] OK    PASS: kk-api can read config
+[2026-09-29T09:03:48] OK    PASS: kk-api cannot read payments code
+[2026-09-29T09:03:48] OK    PASS: kk-payments cannot read api code
+[2026-09-29T09:03:48] OK    PASS: firewall: SSH allowed from monitoring subnet
+[2026-09-29T09:03:48] OK    PASS: firewall: HTTP allowed from monitoring subnet
+[2026-09-29T09:03:48] OK    PASS: firewall: 3001 allowed from monitoring subnet
+[2026-09-29T09:03:48] OK    PASS: firewall: 3001 denied externally
+[2026-09-29T09:03:48] OK    PASS: ufw is active
+[2026-09-29T09:03:48] OK    PASS: journal directory exists
+[2026-09-29T09:03:48] OK    PASS: journal size cap configured
+[2026-09-29T09:03:48] OK    PASS: logrotate config valid (--debug)
+[2026-09-29T09:03:48] OK    PASS: logrotate rotates daily
+[2026-09-29T09:03:48] OK    PASS: forced rotation of the test log ran
+[2026-09-29T09:03:48] OK    PASS: rotation created a new log file
+[2026-09-29T09:03:48] OK    PASS: kk-api can append to the new log
+[2026-09-29T09:03:48] OK    PASS: kk-payments can read the new log
+[2026-09-29T09:03:48] OK    PASS: kk-payments cannot write the new log
+[2026-09-29T09:03:48] OK    PASS: kk-api can create files in shared/logs
+[2026-09-29T09:03:48] OK    Provisioning complete. All checks passed.

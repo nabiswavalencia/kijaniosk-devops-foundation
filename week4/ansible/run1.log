@@ -1,0 +1,290 @@
+
+PLAY [Configure KijaniKiosk servers to the Week 3 standard] ********************
+
+TASK [Gathering Facts] *********************************************************
+ok: [kijanikiosk-api]
+ok: [kijanikiosk-logs]
+ok: [kijanikiosk-payments]
+
+TASK [Phase 1 | Base packages] *************************************************
+changed: [kijanikiosk-api]
+changed: [kijanikiosk-logs]
+changed: [kijanikiosk-payments]
+
+TASK [Phase 1 | Keyring directory] *********************************************
+ok: [kijanikiosk-logs]
+ok: [kijanikiosk-payments]
+ok: [kijanikiosk-api]
+
+TASK [Phase 1 | NodeSource signing key] ****************************************
+changed: [kijanikiosk-payments]
+changed: [kijanikiosk-api]
+changed: [kijanikiosk-logs]
+
+TASK [Phase 1 | NodeSource repository] *****************************************
+changed: [kijanikiosk-payments]
+changed: [kijanikiosk-logs]
+changed: [kijanikiosk-api]
+
+TASK [Phase 1 | nginx and nodejs at pinned versions] ***************************
+changed: [kijanikiosk-logs]
+changed: [kijanikiosk-payments]
+changed: [kijanikiosk-api]
+
+TASK [Phase 1 | Hold pinned packages] ******************************************
+changed: [kijanikiosk-payments] => (item=nginx)
+changed: [kijanikiosk-logs] => (item=nginx)
+changed: [kijanikiosk-api] => (item=nginx)
+changed: [kijanikiosk-payments] => (item=nodejs)
+changed: [kijanikiosk-api] => (item=nodejs)
+changed: [kijanikiosk-logs] => (item=nodejs)
+
+TASK [Phase 2 | Shared application group] **************************************
+changed: [kijanikiosk-api]
+changed: [kijanikiosk-logs]
+changed: [kijanikiosk-payments]
+
+TASK [Phase 2 | Per-service private groups] ************************************
+changed: [kijanikiosk-payments] => (item=kk-api)
+changed: [kijanikiosk-logs] => (item=kk-api)
+changed: [kijanikiosk-api] => (item=kk-api)
+changed: [kijanikiosk-payments] => (item=kk-payments)
+changed: [kijanikiosk-logs] => (item=kk-payments)
+changed: [kijanikiosk-api] => (item=kk-payments)
+changed: [kijanikiosk-logs] => (item=kk-logs)
+changed: [kijanikiosk-payments] => (item=kk-logs)
+changed: [kijanikiosk-api] => (item=kk-logs)
+
+TASK [Phase 2 | Service accounts (no login, no home)] **************************
+changed: [kijanikiosk-logs] => (item=kk-api)
+changed: [kijanikiosk-api] => (item=kk-api)
+changed: [kijanikiosk-payments] => (item=kk-api)
+changed: [kijanikiosk-logs] => (item=kk-payments)
+changed: [kijanikiosk-api] => (item=kk-payments)
+changed: [kijanikiosk-payments] => (item=kk-payments)
+changed: [kijanikiosk-logs] => (item=kk-logs)
+changed: [kijanikiosk-api] => (item=kk-logs)
+changed: [kijanikiosk-payments] => (item=kk-logs)
+
+TASK [Phase 2 | Operator account in the application group] *********************
+changed: [kijanikiosk-api]
+changed: [kijanikiosk-logs]
+changed: [kijanikiosk-payments]
+
+TASK [Phase 3 | Directories with owners and modes] *****************************
+changed: [kijanikiosk-api] => (item=/opt/kijanikiosk)
+changed: [kijanikiosk-payments] => (item=/opt/kijanikiosk)
+changed: [kijanikiosk-logs] => (item=/opt/kijanikiosk)
+changed: [kijanikiosk-api] => (item=/opt/kijanikiosk/shared)
+changed: [kijanikiosk-payments] => (item=/opt/kijanikiosk/shared)
+changed: [kijanikiosk-logs] => (item=/opt/kijanikiosk/shared)
+changed: [kijanikiosk-api] => (item=/opt/kijanikiosk/scripts)
+changed: [kijanikiosk-payments] => (item=/opt/kijanikiosk/scripts)
+changed: [kijanikiosk-api] => (item=/opt/kijanikiosk/api)
+changed: [kijanikiosk-payments] => (item=/opt/kijanikiosk/api)
+changed: [kijanikiosk-logs] => (item=/opt/kijanikiosk/scripts)
+changed: [kijanikiosk-payments] => (item=/opt/kijanikiosk/payments)
+changed: [kijanikiosk-logs] => (item=/opt/kijanikiosk/api)
+changed: [kijanikiosk-api] => (item=/opt/kijanikiosk/payments)
+changed: [kijanikiosk-payments] => (item=/opt/kijanikiosk/logs)
+changed: [kijanikiosk-api] => (item=/opt/kijanikiosk/logs)
+changed: [kijanikiosk-logs] => (item=/opt/kijanikiosk/payments)
+changed: [kijanikiosk-payments] => (item=/opt/kijanikiosk/config)
+changed: [kijanikiosk-api] => (item=/opt/kijanikiosk/config)
+changed: [kijanikiosk-payments] => (item=/opt/kijanikiosk/health)
+changed: [kijanikiosk-logs] => (item=/opt/kijanikiosk/logs)
+changed: [kijanikiosk-api] => (item=/opt/kijanikiosk/health)
+changed: [kijanikiosk-payments] => (item=/opt/kijanikiosk/shared/logs)
+changed: [kijanikiosk-logs] => (item=/opt/kijanikiosk/config)
+changed: [kijanikiosk-api] => (item=/opt/kijanikiosk/shared/logs)
+changed: [kijanikiosk-logs] => (item=/opt/kijanikiosk/health)
+changed: [kijanikiosk-logs] => (item=/opt/kijanikiosk/shared/logs)
+
+TASK [Phase 3 | Environment files (root-owned, group-readable)] ****************
+changed: [kijanikiosk-payments] => (item=db.env)
+changed: [kijanikiosk-api] => (item=db.env)
+changed: [kijanikiosk-logs] => (item=logs.env)
+changed: [kijanikiosk-api] => (item=api.env)
+changed: [kijanikiosk-payments] => (item=payments-api.env)
+
+TASK [Phase 3 | shared/logs named ACL entries (access and default)] ************
+changed: [kijanikiosk-logs] => (item=kk-api rwx default=False)
+changed: [kijanikiosk-api] => (item=kk-api rwx default=False)
+changed: [kijanikiosk-payments] => (item=kk-api rwx default=False)
+changed: [kijanikiosk-logs] => (item=kk-api rwx default=True)
+changed: [kijanikiosk-payments] => (item=kk-api rwx default=True)
+changed: [kijanikiosk-api] => (item=kk-api rwx default=True)
+changed: [kijanikiosk-logs] => (item=kk-payments r-x default=False)
+changed: [kijanikiosk-payments] => (item=kk-payments r-x default=False)
+changed: [kijanikiosk-api] => (item=kk-payments r-x default=False)
+changed: [kijanikiosk-payments] => (item=kk-payments r-x default=True)
+changed: [kijanikiosk-logs] => (item=kk-payments r-x default=True)
+changed: [kijanikiosk-api] => (item=kk-payments r-x default=True)
+changed: [kijanikiosk-logs] => (item=ubuntu r-x default=False)
+changed: [kijanikiosk-payments] => (item=ubuntu r-x default=False)
+changed: [kijanikiosk-api] => (item=ubuntu r-x default=False)
+changed: [kijanikiosk-payments] => (item=ubuntu r-x default=True)
+changed: [kijanikiosk-logs] => (item=ubuntu r-x default=True)
+changed: [kijanikiosk-api] => (item=ubuntu r-x default=True)
+
+TASK [Phase 3 | shared/logs explicit ACL mask (access and default)] ************
+ok: [kijanikiosk-api] => (item=False)
+ok: [kijanikiosk-payments] => (item=False)
+ok: [kijanikiosk-logs] => (item=False)
+ok: [kijanikiosk-payments] => (item=True)
+ok: [kijanikiosk-api] => (item=True)
+ok: [kijanikiosk-logs] => (item=True)
+
+TASK [Phase 4 | Placeholder application] ***************************************
+changed: [kijanikiosk-api]
+changed: [kijanikiosk-logs]
+changed: [kijanikiosk-payments]
+
+TASK [Phase 4 | systemd unit from template] ************************************
+changed: [kijanikiosk-api]
+changed: [kijanikiosk-logs]
+changed: [kijanikiosk-payments]
+
+TASK [Phase 4 | Apply pending unit and config changes now] *********************
+
+TASK [Phase 4 | Apply pending unit and config changes now] *********************
+
+TASK [Phase 4 | Apply pending unit and config changes now] *********************
+
+RUNNING HANDLER [Reload systemd] ***********************************************
+ok: [kijanikiosk-api]
+ok: [kijanikiosk-logs]
+ok: [kijanikiosk-payments]
+
+RUNNING HANDLER [Restart service] **********************************************
+changed: [kijanikiosk-logs]
+changed: [kijanikiosk-api]
+changed: [kijanikiosk-payments]
+
+TASK [Phase 4 | Service enabled and running] ***********************************
+changed: [kijanikiosk-api]
+changed: [kijanikiosk-payments]
+changed: [kijanikiosk-logs]
+
+TASK [Phase 5 | Default policies] **********************************************
+ok: [kijanikiosk-logs] => (item={'policy': 'deny', 'direction': 'incoming'})
+ok: [kijanikiosk-payments] => (item={'policy': 'deny', 'direction': 'incoming'})
+ok: [kijanikiosk-api] => (item={'policy': 'deny', 'direction': 'incoming'})
+ok: [kijanikiosk-logs] => (item={'policy': 'allow', 'direction': 'outgoing'})
+ok: [kijanikiosk-payments] => (item={'policy': 'allow', 'direction': 'outgoing'})
+ok: [kijanikiosk-api] => (item={'policy': 'allow', 'direction': 'outgoing'})
+
+TASK [Phase 5 | Rules] *********************************************************
+changed: [kijanikiosk-api] => (item=allow 22 SSH from operator network (Ansible host))
+changed: [kijanikiosk-payments] => (item=allow 22 SSH from operator network (Ansible host))
+changed: [kijanikiosk-logs] => (item=allow 22 SSH from operator network (Ansible host))
+changed: [kijanikiosk-api] => (item=allow 22 SSH from monitoring/admin subnet)
+changed: [kijanikiosk-payments] => (item=allow 22 SSH from monitoring/admin subnet)
+changed: [kijanikiosk-api] => (item=allow 80 HTTP from monitoring subnet)
+changed: [kijanikiosk-payments] => (item=allow 80 HTTP from monitoring subnet)
+changed: [kijanikiosk-logs] => (item=allow 22 SSH from monitoring/admin subnet)
+changed: [kijanikiosk-payments] => (item=allow 3001 kk-payments health check from monitoring subnet)
+changed: [kijanikiosk-logs] => (item=allow 80 HTTP from monitoring subnet)
+changed: [kijanikiosk-api] => (item=allow 3000 kk-api health check from monitoring subnet)
+changed: [kijanikiosk-payments] => (item=allow 3001 kk-payments loopback for nginx proxy)
+changed: [kijanikiosk-logs] => (item=allow 3002 kk-logs health check from monitoring subnet)
+changed: [kijanikiosk-api] => (item=allow 3000 kk-api loopback for nginx proxy)
+changed: [kijanikiosk-payments] => (item=deny 3001 kk-payments internal port, no external access)
+changed: [kijanikiosk-logs] => (item=allow 3002 kk-logs loopback for nginx proxy)
+changed: [kijanikiosk-api] => (item=deny 3000 kk-api internal port, no external access)
+changed: [kijanikiosk-logs] => (item=deny 3002 kk-logs internal port, no external access)
+
+TASK [Phase 5 | Enable firewall] ***********************************************
+changed: [kijanikiosk-api]
+changed: [kijanikiosk-payments]
+changed: [kijanikiosk-logs]
+
+TASK [Phase 6 | Persistent journal directory] **********************************
+ok: [kijanikiosk-api]
+ok: [kijanikiosk-payments]
+ok: [kijanikiosk-logs]
+
+TASK [Phase 6 | journald drop-in directory] ************************************
+changed: [kijanikiosk-api]
+changed: [kijanikiosk-logs]
+changed: [kijanikiosk-payments]
+
+TASK [Phase 6 | journald settings] *********************************************
+changed: [kijanikiosk-api]
+changed: [kijanikiosk-logs]
+changed: [kijanikiosk-payments]
+
+TASK [Phase 7 | logrotate config (validated before it is installed)] ***********
+changed: [kijanikiosk-payments]
+changed: [kijanikiosk-api]
+changed: [kijanikiosk-logs]
+
+TASK [Phase 7 | Apply journald change before verification] *********************
+
+TASK [Phase 7 | Apply journald change before verification] *********************
+
+TASK [Phase 7 | Apply journald change before verification] *********************
+
+RUNNING HANDLER [Restart journald] *********************************************
+changed: [kijanikiosk-logs]
+changed: [kijanikiosk-api]
+changed: [kijanikiosk-payments]
+
+TASK [Phase 8 | Service answers on its port] ***********************************
+ok: [kijanikiosk-payments]
+ok: [kijanikiosk-logs]
+ok: [kijanikiosk-api]
+
+TASK [Phase 8 | Health file (no timestamp, so a healthy re-run changes nothing)] ***
+changed: [kijanikiosk-payments]
+changed: [kijanikiosk-logs]
+changed: [kijanikiosk-api]
+
+TASK [Phase 8 | Access model checks] *******************************************
+ok: [kijanikiosk-api] => (item=kk-api can write shared/logs)
+ok: [kijanikiosk-payments] => (item=kk-api can write shared/logs)
+ok: [kijanikiosk-logs] => (item=kk-api can write shared/logs)
+ok: [kijanikiosk-api] => (item=kk-payments cannot write shared/logs)
+ok: [kijanikiosk-payments] => (item=kk-payments cannot write shared/logs)
+ok: [kijanikiosk-logs] => (item=kk-payments cannot write shared/logs)
+ok: [kijanikiosk-api] => (item=kk-payments can read shared/logs)
+ok: [kijanikiosk-payments] => (item=kk-payments can read shared/logs)
+ok: [kijanikiosk-logs] => (item=kk-payments can read shared/logs)
+ok: [kijanikiosk-api] => (item=kk-api cannot read payments code)
+ok: [kijanikiosk-api] => (item=kk-payments cannot read api code)
+ok: [kijanikiosk-logs] => (item=kk-api cannot read payments code)
+ok: [kijanikiosk-payments] => (item=kk-api cannot read payments code)
+ok: [kijanikiosk-api] => (item=kk-api can read health file)
+ok: [kijanikiosk-payments] => (item=kk-payments cannot read api code)
+ok: [kijanikiosk-logs] => (item=kk-payments cannot read api code)
+ok: [kijanikiosk-payments] => (item=kk-api can read health file)
+ok: [kijanikiosk-logs] => (item=kk-api can read health file)
+
+TASK [Phase 8 | Service account can read its own env files (Challenge D)] ******
+ok: [kijanikiosk-api] => (item=db.env)
+ok: [kijanikiosk-payments] => (item=db.env)
+ok: [kijanikiosk-logs] => (item=logs.env)
+ok: [kijanikiosk-api] => (item=api.env)
+ok: [kijanikiosk-payments] => (item=payments-api.env)
+
+TASK [Phase 8 | systemd security score] ****************************************
+ok: [kijanikiosk-api]
+ok: [kijanikiosk-payments]
+ok: [kijanikiosk-logs]
+
+TASK [Phase 8 | Report score] **************************************************
+ok: [kijanikiosk-api] => {
+    "msg": "kk-api: → Overall exposure level for kk-api.service: 3.0 OK 🙂"
+}
+ok: [kijanikiosk-logs] => {
+    "msg": "kk-logs: → Overall exposure level for kk-logs.service: 3.0 OK 🙂"
+}
+ok: [kijanikiosk-payments] => {
+    "msg": "kk-payments: → Overall exposure level for kk-payments.service: 2.5 OK 🙂"
+}
+
+PLAY RECAP *********************************************************************
+kijanikiosk-api            : ok=34   changed=23   unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+kijanikiosk-logs           : ok=34   changed=23   unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+kijanikiosk-payments       : ok=34   changed=23   unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+

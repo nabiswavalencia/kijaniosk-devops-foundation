@@ -1,0 +1,967 @@
+
+==> [19:29:54] Terraform init (MinIO S3 backend)
+
+==> [19:29:57] Terraform plan
+
+Terraform used the selected providers to generate the following execution
+plan. Resource actions are indicated with the following symbols:
+  + create
+ <= read (data resources)
+
+Terraform will perform the following actions:
+
+  # module.app_server["api"].data.external.ip will be read during apply
+  # (depends on a resource or a module with changes pending)
+ <= data "external" "ip" {
+      + id      = (known after apply)
+      + program = [
+          + "bash",
+          + "-c",
+          + "multipass info kijanikiosk-api --format json | jq -c '{ip: (.info[] | .ipv4[0])}'",
+        ]
+      + result  = (known after apply)
+    }
+
+  # module.app_server["api"].null_resource.this will be created
+  + resource "null_resource" "this" {
+      + id       = (known after apply)
+      + triggers = {
+          + "cpus"     = "1"
+          + "disk"     = "5G"
+          + "image"    = "22.04"
+          + "init_sha" = "dbb963cb58a6cd81068f4783969c500dca1ae03904ca29123347a6840dcdcb32"
+          + "memory"   = "1G"
+          + "name"     = "kijanikiosk-api"
+        }
+    }
+
+  # module.app_server["logs"].data.external.ip will be read during apply
+  # (depends on a resource or a module with changes pending)
+ <= data "external" "ip" {
+      + id      = (known after apply)
+      + program = [
+          + "bash",
+          + "-c",
+          + "multipass info kijanikiosk-logs --format json | jq -c '{ip: (.info[] | .ipv4[0])}'",
+        ]
+      + result  = (known after apply)
+    }
+
+  # module.app_server["logs"].null_resource.this will be created
+  + resource "null_resource" "this" {
+      + id       = (known after apply)
+      + triggers = {
+          + "cpus"     = "1"
+          + "disk"     = "5G"
+          + "image"    = "22.04"
+          + "init_sha" = "dbb963cb58a6cd81068f4783969c500dca1ae03904ca29123347a6840dcdcb32"
+          + "memory"   = "1G"
+          + "name"     = "kijanikiosk-logs"
+        }
+    }
+
+  # module.app_server["payments"].data.external.ip will be read during apply
+  # (depends on a resource or a module with changes pending)
+ <= data "external" "ip" {
+      + id      = (known after apply)
+      + program = [
+          + "bash",
+          + "-c",
+          + "multipass info kijanikiosk-payments --format json | jq -c '{ip: (.info[] | .ipv4[0])}'",
+        ]
+      + result  = (known after apply)
+    }
+
+  # module.app_server["payments"].null_resource.this will be created
+  + resource "null_resource" "this" {
+      + id       = (known after apply)
+      + triggers = {
+          + "cpus"     = "1"
+          + "disk"     = "5G"
+          + "image"    = "22.04"
+          + "init_sha" = "dbb963cb58a6cd81068f4783969c500dca1ae03904ca29123347a6840dcdcb32"
+          + "memory"   = "1G"
+          + "name"     = "kijanikiosk-payments"
+        }
+    }
+
+Plan: 3 to add, 0 to change, 0 to destroy.
+
+Changes to Outputs:
+  + ansible_inventory = (known after apply)
+  + server_ips        = {
+      + api      = (known after apply)
+      + logs     = (known after apply)
+      + payments = (known after apply)
+    }
+  + ssh_commands      = {
+      + api      = (known after apply)
+      + logs     = (known after apply)
+      + payments = (known after apply)
+    }
+
+─────────────────────────────────────────────────────────────────────────────
+
+Saved the plan to: tfplan
+
+To perform exactly these actions, run the following command to apply:
+    terraform apply "tfplan"
+
+==> [19:29:57] Terraform apply
+module.app_server["payments"].null_resource.this: Creating...
+module.app_server["logs"].null_resource.this: Creating...
+module.app_server["api"].null_resource.this: Creating...
+module.app_server["api"].null_resource.this: Provisioning with 'local-exec'...
+module.app_server["logs"].null_resource.this: Provisioning with 'local-exec'...
+module.app_server["payments"].null_resource.this: Provisioning with 'local-exec'...
+module.app_server["logs"].null_resource.this (local-exec): Executing: ["bash" "-c" "printf '%s' \"$CLOUD_INIT\" | multipass launch 22.04 --name kijanikiosk-logs --cpus 1 --memory 1G --disk 5G --cloud-init -"]
+module.app_server["api"].null_resource.this (local-exec): Executing: ["bash" "-c" "printf '%s' \"$CLOUD_INIT\" | multipass launch 22.04 --name kijanikiosk-api --cpus 1 --memory 1G --disk 5G --cloud-init -"]
+module.app_server["payments"].null_resource.this (local-exec): Executing: ["bash" "-c" "printf '%s' \"$CLOUD_INIT\" | multipass launch 22.04 --name kijanikiosk-payments --cpus 1 --memory 1G --disk 5G --cloud-init -"]
+module.app_server["logs"].null_resource.this (local-exec): [2K[0A[0E[2K[0A[0ECreating kijanikiosk-logs  /
+module.app_server["api"].null_resource.this (local-exec): [2K[0A[0E[2K[0A[0ECreating kijanikiosk-api  /
+module.app_server["api"].null_resource.this (local-exec): -\|/
+module.app_server["payments"].null_resource.this (local-exec): [2K[0A[0E[2K[0A[0ECreating kijanikiosk-payments  /-\|/-\| [2K[0A[0E[2K[0A[0EConfiguring kijanikiosk-payments  /-\| [2K[0A[0E[2K[0A[0EStarting kijanikiosk-payments  /-\|/-\|/-\|/-\|/-\
+module.app_server["logs"].null_resource.this (local-exec): -\|/-\|/-\|/ [2K[0A[0E[2K[0A[0EConfiguring kijanikiosk-logs  /-\| [2K[0A[0E[2K[0A[0EStarting kijanikiosk-logs  /-\|/-\|/-\|/-\|
+module.app_server["payments"].null_resource.this (local-exec): |/-
+module.app_server["logs"].null_resource.this (local-exec): /-\|
+module.app_server["payments"].null_resource.this (local-exec): \|/-\|/-\|/-\|/-\|
+module.app_server["api"].null_resource.this (local-exec): -\|/-\|/-\|/- [2K[0A[0E[2K[0A[0EConfiguring kijanikiosk-api  /-\ [2K[0A[0E[2K[0A[0EStarting kijanikiosk-api  /-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/
+module.app_server["api"].null_resource.this (local-exec): -\|
+module.app_server["api"].null_resource.this (local-exec): /-\
+module.app_server["payments"].null_resource.this (local-exec): /-\|/-\|/-\|/-\|/-\|
+module.app_server["payments"].null_resource.this (local-exec): /-\|
+module.app_server["payments"].null_resource.this (local-exec): /-
+module.app_server["payments"].null_resource.this (local-exec): \|/-\
+module.app_server["logs"].null_resource.this: Still creating... [00m10s elapsed]
+module.app_server["api"].null_resource.this: Still creating... [00m10s elapsed]
+module.app_server["payments"].null_resource.this: Still creating... [00m10s elapsed]
+module.app_server["payments"].null_resource.this (local-exec): |
+module.app_server["payments"].null_resource.this (local-exec): /
+module.app_server["payments"].null_resource.this (local-exec): -\
+module.app_server["payments"].null_resource.this (local-exec): |/
+module.app_server["api"].null_resource.this (local-exec): |/-\|/-\|/-\|/-\|/-\
+module.app_server["payments"].null_resource.this (local-exec): -\
+module.app_server["api"].null_resource.this (local-exec): |/
+module.app_server["payments"].null_resource.this (local-exec): |
+module.app_server["payments"].null_resource.this (local-exec): /
+module.app_server["payments"].null_resource.this (local-exec): -\|
+module.app_server["api"].null_resource.this (local-exec): -\|/-\|/
+module.app_server["payments"].null_resource.this (local-exec): /-\|/
+module.app_server["payments"].null_resource.this (local-exec): -
+module.app_server["api"].null_resource.this (local-exec): -\|/-\|/-\|/-\|/-\|/-\|/-
+module.app_server["payments"].null_resource.this (local-exec): \|/-\|/-\|/-\|/-\|/-\|/-\|/-\|
+module.app_server["payments"].null_resource.this (local-exec): /-
+module.app_server["payments"].null_resource.this (local-exec): \|/-\|/-\
+module.app_server["api"].null_resource.this (local-exec): \|/-\|/-\|/-\|/-\|/-\|/
+module.app_server["payments"].null_resource.this (local-exec): |/-\|
+module.app_server["api"].null_resource.this (local-exec): -\
+module.app_server["payments"].null_resource.this (local-exec): /-\
+module.app_server["api"].null_resource.this (local-exec): |/
+module.app_server["api"].null_resource.this (local-exec): -\
+module.app_server["api"].null_resource.this (local-exec): |/-
+module.app_server["api"].null_resource.this (local-exec): \|/
+module.app_server["payments"].null_resource.this (local-exec): |/-\|/-\|/-\|/-\|/-\|/-\|/-\|/
+module.app_server["payments"].null_resource.this (local-exec): -
+module.app_server["api"].null_resource.this: Still creating... [00m20s elapsed]
+module.app_server["payments"].null_resource.this: Still creating... [00m20s elapsed]
+module.app_server["logs"].null_resource.this: Still creating... [00m20s elapsed]
+module.app_server["payments"].null_resource.this (local-exec): \|/-\|/
+module.app_server["payments"].null_resource.this (local-exec): -\|/-
+module.app_server["payments"].null_resource.this (local-exec): \|/-\|/-\|/-
+module.app_server["api"].null_resource.this (local-exec): -\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|
+module.app_server["api"].null_resource.this (local-exec): /
+module.app_server["api"].null_resource.this (local-exec): -\
+module.app_server["api"].null_resource.this (local-exec): |
+module.app_server["payments"].null_resource.this (local-exec): \|/-\|/-\|/-\|/
+module.app_server["payments"].null_resource.this (local-exec): -
+module.app_server["payments"].null_resource.this (local-exec): \
+module.app_server["payments"].null_resource.this (local-exec): |/
+module.app_server["payments"].null_resource.this (local-exec): -
+module.app_server["payments"].null_resource.this (local-exec): \
+module.app_server["logs"].null_resource.this (local-exec): /-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\
+module.app_server["payments"].null_resource.this (local-exec): |/-\
+module.app_server["logs"].null_resource.this (local-exec): |/-\
+module.app_server["payments"].null_resource.this (local-exec): |/
+module.app_server["payments"].null_resource.this (local-exec): -
+module.app_server["api"].null_resource.this (local-exec): /-\|/-\|/-\|/-\|/-\|
+module.app_server["logs"].null_resource.this (local-exec): |/-
+module.app_server["logs"].null_resource.this (local-exec): \
+module.app_server["payments"].null_resource.this (local-exec): \|/
+module.app_server["payments"].null_resource.this (local-exec): -
+module.app_server["logs"].null_resource.this (local-exec): |
+module.app_server["payments"].null_resource.this (local-exec): \
+module.app_server["payments"].null_resource.this (local-exec): |/
+module.app_server["logs"].null_resource.this (local-exec): /-\
+module.app_server["payments"].null_resource.this (local-exec): -
+module.app_server["logs"].null_resource.this (local-exec): |
+module.app_server["api"].null_resource.this (local-exec): /-\|/-\|
+module.app_server["api"].null_resource.this (local-exec): /
+module.app_server["logs"].null_resource.this (local-exec): /-
+module.app_server["payments"].null_resource.this (local-exec): \|/
+module.app_server["logs"].null_resource.this (local-exec): \|
+module.app_server["logs"].null_resource.this (local-exec): /
+module.app_server["payments"].null_resource.this (local-exec): -\
+module.app_server["logs"].null_resource.this (local-exec): -
+module.app_server["logs"].null_resource.this (local-exec): \
+module.app_server["api"].null_resource.this (local-exec): -\|/-\
+module.app_server["payments"].null_resource.this (local-exec): |/-
+module.app_server["logs"].null_resource.this (local-exec): |
+module.app_server["logs"].null_resource.this (local-exec): /
+module.app_server["payments"].null_resource.this (local-exec): \|
+module.app_server["logs"].null_resource.this (local-exec): -\
+module.app_server["payments"].null_resource.this (local-exec): /
+module.app_server["logs"].null_resource.this (local-exec): |
+module.app_server["payments"].null_resource.this (local-exec): -\|/
+module.app_server["logs"].null_resource.this (local-exec): /-\
+module.app_server["logs"].null_resource.this (local-exec): |/
+module.app_server["api"].null_resource.this (local-exec): |/-\|/-\|/
+module.app_server["logs"].null_resource.this (local-exec): -
+module.app_server["payments"].null_resource.this (local-exec): -\|/
+module.app_server["api"].null_resource.this (local-exec): -\|
+module.app_server["logs"].null_resource.this (local-exec): \|/-\|/-\|
+module.app_server["api"].null_resource.this (local-exec): /-\|/-\|
+module.app_server["payments"].null_resource.this: Still creating... [00m30s elapsed]
+module.app_server["api"].null_resource.this: Still creating... [00m30s elapsed]
+module.app_server["logs"].null_resource.this: Still creating... [00m30s elapsed]
+module.app_server["logs"].null_resource.this (local-exec): /-\|/-\|/-\|/-\|/-\|/-\|/-\|/-
+module.app_server["payments"].null_resource.this (local-exec): -\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/
+module.app_server["payments"].null_resource.this (local-exec): -\|
+module.app_server["payments"].null_resource.this (local-exec): /
+module.app_server["payments"].null_resource.this (local-exec): -\
+module.app_server["payments"].null_resource.this (local-exec): |/
+module.app_server["payments"].null_resource.this (local-exec): -\
+module.app_server["payments"].null_resource.this (local-exec): |
+module.app_server["payments"].null_resource.this (local-exec): /
+module.app_server["payments"].null_resource.this (local-exec): -\
+module.app_server["payments"].null_resource.this (local-exec): |
+module.app_server["api"].null_resource.this (local-exec): /-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\ [2K[0A[0E[2K[0A[0EWaiting for initialization to complete  /-\|/-\|/-\|/-\|/-\|
+module.app_server["api"].null_resource.this (local-exec): /-\|/-\
+module.app_server["api"].null_resource.this (local-exec): |/
+module.app_server["payments"].null_resource.this (local-exec): /-\|/-\|/-\|/- [2K[0A[0E[2K[0A[0EWaiting for initialization to complete  /-\|/-\|/-\|/-\|/-\|/-\|/-\|/-
+module.app_server["logs"].null_resource.this: Still creating... [00m40s elapsed]
+module.app_server["api"].null_resource.this: Still creating... [00m40s elapsed]
+module.app_server["payments"].null_resource.this: Still creating... [00m40s elapsed]
+module.app_server["payments"].null_resource.this (local-exec): \|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\
+module.app_server["payments"].null_resource.this (local-exec): |
+module.app_server["payments"].null_resource.this (local-exec): /-
+module.app_server["payments"].null_resource.this (local-exec): \
+module.app_server["payments"].null_resource.this (local-exec): |/
+module.app_server["payments"].null_resource.this (local-exec): -
+module.app_server["payments"].null_resource.this (local-exec): \
+module.app_server["api"].null_resource.this (local-exec): -\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\
+module.app_server["api"].null_resource.this (local-exec): |/-
+module.app_server["logs"].null_resource.this (local-exec): \|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\| [2K[0A[0E[2K[0A[0EWaiting for initialization to complete  /-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/
+module.app_server["api"].null_resource.this (local-exec): \
+module.app_server["logs"].null_resource.this (local-exec): -\|/-
+module.app_server["payments"].null_resource.this (local-exec): |/-\|/-\|/-\
+module.app_server["logs"].null_resource.this (local-exec): \
+module.app_server["logs"].null_resource.this (local-exec): |
+module.app_server["payments"].null_resource.this (local-exec): |/
+module.app_server["api"].null_resource.this (local-exec): |/-\|/-
+module.app_server["api"].null_resource.this (local-exec): \
+module.app_server["logs"].null_resource.this (local-exec): /-
+module.app_server["logs"].null_resource.this (local-exec): \
+module.app_server["payments"].null_resource.this (local-exec): -\|/
+module.app_server["logs"].null_resource.this (local-exec): |/
+module.app_server["payments"].null_resource.this (local-exec): -
+module.app_server["payments"].null_resource.this (local-exec): \
+module.app_server["api"].null_resource.this (local-exec): |/-\|/-\
+module.app_server["api"].null_resource.this (local-exec): |
+module.app_server["logs"].null_resource.this (local-exec): -\|/-\|
+module.app_server["api"].null_resource.this (local-exec): /-\
+module.app_server["api"].null_resource.this (local-exec): |/
+module.app_server["api"].null_resource.this (local-exec): -
+module.app_server["api"].null_resource.this (local-exec): \
+module.app_server["api"].null_resource.this (local-exec): |
+module.app_server["api"].null_resource.this (local-exec): /-
+module.app_server["api"].null_resource.this (local-exec): \|
+module.app_server["payments"].null_resource.this (local-exec): |/-\|/-\|/-\|/-\|
+module.app_server["api"].null_resource.this (local-exec): /
+module.app_server["api"].null_resource.this (local-exec): -\
+module.app_server["payments"].null_resource.this (local-exec): /-\|/
+module.app_server["payments"].null_resource.this (local-exec): -\
+module.app_server["payments"].null_resource.this (local-exec): |
+module.app_server["payments"].null_resource.this (local-exec): /-
+module.app_server["payments"].null_resource.this (local-exec): \
+module.app_server["payments"].null_resource.this (local-exec): |/-\|/-\|/-\|/-\|/-\|/-
+module.app_server["payments"].null_resource.this (local-exec): \
+module.app_server["payments"].null_resource.this (local-exec): |
+module.app_server["logs"].null_resource.this (local-exec): /-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\
+module.app_server["api"].null_resource.this: Still creating... [00m50s elapsed]
+module.app_server["logs"].null_resource.this: Still creating... [00m50s elapsed]
+module.app_server["payments"].null_resource.this: Still creating... [00m50s elapsed]
+module.app_server["payments"].null_resource.this (local-exec): /-\|/-\|/-\|/-
+module.app_server["payments"].null_resource.this (local-exec): \|/-
+module.app_server["payments"].null_resource.this (local-exec): \|
+module.app_server["payments"].null_resource.this (local-exec): /-\
+module.app_server["logs"].null_resource.this (local-exec): |/-\|/-\|/-\|/-\
+module.app_server["payments"].null_resource.this (local-exec): |/
+module.app_server["api"].null_resource.this (local-exec): |/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\
+module.app_server["api"].null_resource.this (local-exec): |/-
+module.app_server["logs"].null_resource.this (local-exec): |/-\|/-\|/-\|/-\|/-
+module.app_server["logs"].null_resource.this (local-exec): \|/-\|/-\|/-\|
+module.app_server["payments"].null_resource.this (local-exec): -\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|
+module.app_server["payments"].null_resource.this (local-exec): /-\|/-
+module.app_server["logs"].null_resource.this (local-exec): /-\|/-\|/-\|/-\|/-\|/-\|/-
+module.app_server["logs"].null_resource.this (local-exec): \|/-\|/-\|/-\|/-\|/-\
+module.app_server["payments"].null_resource.this (local-exec): \|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/
+module.app_server["logs"].null_resource.this (local-exec): |/
+module.app_server["payments"].null_resource.this (local-exec): -\|/
+module.app_server["logs"].null_resource.this: Still creating... [01m00s elapsed]
+module.app_server["payments"].null_resource.this: Still creating... [01m00s elapsed]
+module.app_server["api"].null_resource.this: Still creating... [01m00s elapsed]
+module.app_server["payments"].null_resource.this (local-exec): -\|/
+module.app_server["payments"].null_resource.this (local-exec): -\|
+module.app_server["payments"].null_resource.this (local-exec): /-
+module.app_server["payments"].null_resource.this (local-exec): \|
+module.app_server["api"].null_resource.this (local-exec): \|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-
+module.app_server["logs"].null_resource.this (local-exec): -\|/-\|/-\|/-\|/
+module.app_server["api"].null_resource.this (local-exec): \
+module.app_server["payments"].null_resource.this (local-exec): /-\|/-
+module.app_server["api"].null_resource.this (local-exec): |/-\
+module.app_server["api"].null_resource.this (local-exec): |
+module.app_server["api"].null_resource.this (local-exec): /-
+module.app_server["payments"].null_resource.this (local-exec): \|/
+module.app_server["payments"].null_resource.this (local-exec): -\|/-\
+module.app_server["api"].null_resource.this (local-exec): \|/-\|/-\|
+module.app_server["logs"].null_resource.this (local-exec): -\|/-\|/-\|/-\|/-\|/-
+module.app_server["api"].null_resource.this (local-exec): /-\|/-\|/-\
+module.app_server["api"].null_resource.this (local-exec): |/
+module.app_server["payments"].null_resource.this (local-exec): |/-\|/-\|/-\|/-\|/-\
+module.app_server["api"].null_resource.this (local-exec): -\|/
+module.app_server["payments"].null_resource.this (local-exec): |/
+module.app_server["payments"].null_resource.this (local-exec): -
+module.app_server["api"].null_resource.this (local-exec): -\|
+module.app_server["api"].null_resource.this (local-exec): /
+module.app_server["api"].null_resource.this (local-exec): -
+module.app_server["payments"].null_resource.this (local-exec): \|/-
+module.app_server["api"].null_resource.this (local-exec): \|
+module.app_server["api"].null_resource.this (local-exec): /
+module.app_server["api"].null_resource.this (local-exec): -\
+module.app_server["api"].null_resource.this (local-exec): |/-\
+module.app_server["payments"].null_resource.this (local-exec): \|/-\|/-
+module.app_server["api"].null_resource.this (local-exec): |
+module.app_server["api"].null_resource.this (local-exec): /
+module.app_server["api"].null_resource.this (local-exec): -\|/-\|
+module.app_server["api"].null_resource.this (local-exec): /-
+module.app_server["payments"].null_resource.this (local-exec): \|/-\|/-\|/-\
+module.app_server["api"].null_resource.this (local-exec): \|/
+module.app_server["payments"].null_resource.this (local-exec): |/
+module.app_server["payments"].null_resource.this (local-exec): -
+module.app_server["payments"].null_resource.this (local-exec): \|/-
+module.app_server["payments"].null_resource.this (local-exec): \
+module.app_server["logs"].null_resource.this (local-exec): \|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\
+module.app_server["payments"].null_resource.this (local-exec): |/-\|/-\|/-\|/-\
+module.app_server["api"].null_resource.this: Still creating... [01m10s elapsed]
+module.app_server["payments"].null_resource.this: Still creating... [01m10s elapsed]
+module.app_server["logs"].null_resource.this: Still creating... [01m10s elapsed]
+module.app_server["payments"].null_resource.this (local-exec): |/
+module.app_server["payments"].null_resource.this (local-exec): -\
+module.app_server["logs"].null_resource.this (local-exec): |/-\|/-\|/-\|/-\
+module.app_server["payments"].null_resource.this (local-exec): |
+module.app_server["api"].null_resource.this (local-exec): -\|/-\|/-\|/-\|/-\|/-\|/-\|/-
+module.app_server["payments"].null_resource.this (local-exec): /
+module.app_server["payments"].null_resource.this (local-exec): -
+module.app_server["payments"].null_resource.this (local-exec): \
+module.app_server["payments"].null_resource.this (local-exec): |/
+module.app_server["payments"].null_resource.this (local-exec): -\
+module.app_server["payments"].null_resource.this (local-exec): |
+module.app_server["payments"].null_resource.this (local-exec): /
+module.app_server["logs"].null_resource.this (local-exec): |/-\|/-\|/
+module.app_server["payments"].null_resource.this (local-exec): -
+module.app_server["api"].null_resource.this (local-exec): \|/-\|/-\|
+module.app_server["payments"].null_resource.this (local-exec): \
+module.app_server["payments"].null_resource.this (local-exec): |/
+module.app_server["payments"].null_resource.this (local-exec): -\
+module.app_server["payments"].null_resource.this (local-exec): |
+module.app_server["payments"].null_resource.this (local-exec): /-
+module.app_server["payments"].null_resource.this (local-exec): \|/
+module.app_server["api"].null_resource.this (local-exec): /-\|/-\|/-\
+module.app_server["api"].null_resource.this (local-exec): |/-
+module.app_server["payments"].null_resource.this (local-exec): -\|/-\
+module.app_server["api"].null_resource.this (local-exec): \|/-
+module.app_server["api"].null_resource.this (local-exec): \|
+module.app_server["api"].null_resource.this (local-exec): /
+module.app_server["api"].null_resource.this (local-exec): -\|/-\|/
+module.app_server["api"].null_resource.this (local-exec): -
+module.app_server["logs"].null_resource.this (local-exec): -\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\
+module.app_server["api"].null_resource.this (local-exec): \|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\
+module.app_server["api"].null_resource.this (local-exec): |
+module.app_server["api"].null_resource.this (local-exec): /-
+module.app_server["api"].null_resource.this (local-exec): \
+module.app_server["payments"].null_resource.this (local-exec): |/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-
+module.app_server["payments"].null_resource.this (local-exec): \
+module.app_server["logs"].null_resource.this (local-exec): |/-\|/-\|/-\|/-\|/-\|/-\|/-\|/
+module.app_server["payments"].null_resource.this (local-exec): |/-
+module.app_server["payments"].null_resource.this (local-exec): \
+module.app_server["logs"].null_resource.this (local-exec): -\|
+module.app_server["api"].null_resource.this: Still creating... [01m20s elapsed]
+module.app_server["payments"].null_resource.this: Still creating... [01m20s elapsed]
+module.app_server["logs"].null_resource.this: Still creating... [01m20s elapsed]
+module.app_server["payments"].null_resource.this (local-exec): |/-\|/
+module.app_server["logs"].null_resource.this (local-exec): /-\|/-
+module.app_server["logs"].null_resource.this (local-exec): \|/-
+module.app_server["logs"].null_resource.this (local-exec): \|
+module.app_server["api"].null_resource.this (local-exec): |/-\|/-\|/-\|/-\|/-\|/-
+module.app_server["api"].null_resource.this (local-exec): \
+module.app_server["logs"].null_resource.this (local-exec): /-
+module.app_server["api"].null_resource.this (local-exec): |/
+module.app_server["api"].null_resource.this (local-exec): -\
+module.app_server["api"].null_resource.this (local-exec): |/
+module.app_server["payments"].null_resource.this (local-exec): -\|/-\|/-\|/-\|/
+module.app_server["payments"].null_resource.this (local-exec): -
+module.app_server["payments"].null_resource.this (local-exec): \
+module.app_server["api"].null_resource.this (local-exec): -\|
+module.app_server["api"].null_resource.this (local-exec): /
+module.app_server["api"].null_resource.this (local-exec): -
+module.app_server["payments"].null_resource.this (local-exec): |/-\
+module.app_server["api"].null_resource.this (local-exec): \|/-
+module.app_server["payments"].null_resource.this (local-exec): |/-\|/-
+module.app_server["api"].null_resource.this (local-exec): \|/-\|/
+module.app_server["payments"].null_resource.this (local-exec): \|/-
+module.app_server["api"].null_resource.this (local-exec): -\|
+module.app_server["api"].null_resource.this (local-exec): /-
+module.app_server["api"].null_resource.this (local-exec): \
+module.app_server["payments"].null_resource.this (local-exec): \|/-\|
+module.app_server["api"].null_resource.this (local-exec): |/
+module.app_server["api"].null_resource.this (local-exec): -\
+module.app_server["payments"].null_resource.this (local-exec): /-
+module.app_server["api"].null_resource.this (local-exec): |/
+module.app_server["api"].null_resource.this (local-exec): -
+module.app_server["payments"].null_resource.this (local-exec): \|/-
+module.app_server["api"].null_resource.this (local-exec): \
+module.app_server["logs"].null_resource.this (local-exec): \|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\
+module.app_server["api"].null_resource.this (local-exec): |/
+module.app_server["payments"].null_resource.this (local-exec): \|/-
+module.app_server["payments"].null_resource.this (local-exec): \
+module.app_server["payments"].null_resource.this (local-exec): |/-
+module.app_server["payments"].null_resource.this (local-exec): \
+module.app_server["logs"].null_resource.this (local-exec): |/-\|/-\
+module.app_server["api"].null_resource.this (local-exec): -\|/-\|/-
+module.app_server["payments"].null_resource.this (local-exec): |/-\
+module.app_server["payments"].null_resource.this (local-exec): |/
+module.app_server["payments"].null_resource.this (local-exec): -\|
+module.app_server["payments"].null_resource.this (local-exec): /
+module.app_server["logs"].null_resource.this (local-exec): |/-\|/-\|/
+module.app_server["logs"].null_resource.this (local-exec): -
+module.app_server["logs"].null_resource.this (local-exec): \
+module.app_server["api"].null_resource.this (local-exec): \|/-\|/-\|/
+module.app_server["api"].null_resource.this (local-exec): -\
+module.app_server["api"].null_resource.this (local-exec): |/
+module.app_server["payments"].null_resource.this (local-exec): -\|/-\|/-
+module.app_server["api"].null_resource.this (local-exec): -\|
+module.app_server["api"].null_resource.this (local-exec): /-
+module.app_server["api"].null_resource.this (local-exec): \
+module.app_server["api"].null_resource.this (local-exec): |
+module.app_server["api"].null_resource.this (local-exec): /-
+module.app_server["api"].null_resource.this (local-exec): \|
+module.app_server["payments"].null_resource.this (local-exec): \|/-\|/-\|
+module.app_server["payments"].null_resource.this (local-exec): /-\|
+module.app_server["api"].null_resource.this (local-exec): /-\|/-\
+module.app_server["api"].null_resource.this (local-exec): |/
+module.app_server["api"].null_resource.this (local-exec): -
+module.app_server["api"].null_resource.this (local-exec): \|/-\|
+module.app_server["payments"].null_resource.this: Still creating... [01m30s elapsed]
+module.app_server["api"].null_resource.this: Still creating... [01m30s elapsed]
+module.app_server["logs"].null_resource.this: Still creating... [01m30s elapsed]
+module.app_server["api"].null_resource.this (local-exec): /-\
+module.app_server["payments"].null_resource.this (local-exec): /-\|/-\|/-\|/-
+module.app_server["api"].null_resource.this (local-exec): |/-
+module.app_server["api"].null_resource.this (local-exec): \|/
+module.app_server["payments"].null_resource.this (local-exec): \|/-\|/-
+module.app_server["payments"].null_resource.this (local-exec): \|
+module.app_server["logs"].null_resource.this (local-exec): |/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/
+module.app_server["logs"].null_resource.this (local-exec): -\
+module.app_server["api"].null_resource.this (local-exec): -\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|
+module.app_server["api"].null_resource.this (local-exec): /-\|/-
+module.app_server["payments"].null_resource.this (local-exec): /-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|
+module.app_server["payments"].null_resource.this (local-exec): /-
+module.app_server["logs"].null_resource.this (local-exec): |/-\|/-\|/-\|/-\|/-\
+module.app_server["api"].null_resource.this (local-exec): \|/-\|/-
+module.app_server["logs"].null_resource.this (local-exec): |/
+module.app_server["api"].null_resource.this (local-exec): \|
+module.app_server["api"].null_resource.this (local-exec): /-
+module.app_server["logs"].null_resource.this (local-exec): -\|/-\|/-
+module.app_server["payments"].null_resource.this (local-exec): \|/-\|/-\|/-\|/-\|
+module.app_server["api"].null_resource.this (local-exec): \|/-\|/-\|/-\|/-
+module.app_server["api"].null_resource.this (local-exec): \
+module.app_server["api"].null_resource.this (local-exec): |/
+module.app_server["api"].null_resource.this (local-exec): -\|
+module.app_server["api"].null_resource.this (local-exec): /-\|/-\|/-\|
+module.app_server["api"].null_resource.this (local-exec): /
+module.app_server["api"].null_resource.this: Still creating... [01m40s elapsed]
+module.app_server["payments"].null_resource.this: Still creating... [01m40s elapsed]
+module.app_server["logs"].null_resource.this: Still creating... [01m40s elapsed]
+module.app_server["logs"].null_resource.this (local-exec): \|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-
+module.app_server["logs"].null_resource.this (local-exec): \
+module.app_server["payments"].null_resource.this (local-exec): /-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-
+module.app_server["payments"].null_resource.this (local-exec): \|/
+module.app_server["payments"].null_resource.this (local-exec): -
+module.app_server["logs"].null_resource.this (local-exec): |/-\|/-\|/-
+module.app_server["logs"].null_resource.this (local-exec): \
+module.app_server["logs"].null_resource.this (local-exec): |/
+module.app_server["logs"].null_resource.this (local-exec): -\|/
+module.app_server["api"].null_resource.this (local-exec): -\|/-\|/-\|/-\|/-\|/-\
+module.app_server["logs"].null_resource.this (local-exec): -\|/-
+module.app_server["logs"].null_resource.this (local-exec): \
+module.app_server["logs"].null_resource.this (local-exec): |
+module.app_server["api"].null_resource.this (local-exec): |/-\|/-\|/-
+module.app_server["payments"].null_resource.this (local-exec): \|/-\|/-\|/-\|/-\|/-\|/-\|
+module.app_server["payments"].null_resource.this (local-exec): /-
+module.app_server["payments"].null_resource.this (local-exec): \|
+module.app_server["payments"].null_resource.this (local-exec): /
+module.app_server["logs"].null_resource.this (local-exec): /-\|/-\|/-\|/-\|/-\|/-\|/
+module.app_server["api"].null_resource.this (local-exec): \|/-\|/-\|/-\|/-\|/-\|/-\
+module.app_server["logs"].null_resource.this (local-exec): -\|/-\|
+module.app_server["api"].null_resource.this (local-exec): |/-\|
+module.app_server["logs"].null_resource.this (local-exec): /-\
+module.app_server["payments"].null_resource.this (local-exec): -\|/-\|/-\|/-\|/-\|/-\|/-\|
+module.app_server["api"].null_resource.this (local-exec): /-\|/-\|/-\|/-\|/-\|/-
+module.app_server["api"].null_resource.this (local-exec): \|
+module.app_server["api"].null_resource.this (local-exec): /-
+module.app_server["api"].null_resource.this (local-exec): \|/-\|/-\|/
+module.app_server["api"].null_resource.this: Still creating... [01m50s elapsed]
+module.app_server["payments"].null_resource.this: Still creating... [01m50s elapsed]
+module.app_server["logs"].null_resource.this: Still creating... [01m50s elapsed]
+module.app_server["api"].null_resource.this (local-exec): -
+module.app_server["api"].null_resource.this (local-exec): \
+module.app_server["api"].null_resource.this (local-exec): |/-
+module.app_server["api"].null_resource.this (local-exec): \
+module.app_server["api"].null_resource.this (local-exec): |/-\|/-\|/-\|
+module.app_server["api"].null_resource.this (local-exec): /
+module.app_server["api"].null_resource.this (local-exec): -
+module.app_server["api"].null_resource.this (local-exec): \|/
+module.app_server["payments"].null_resource.this (local-exec): /-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|
+module.app_server["payments"].null_resource.this (local-exec): /-\|
+module.app_server["payments"].null_resource.this (local-exec): /
+module.app_server["payments"].null_resource.this (local-exec): -\
+module.app_server["payments"].null_resource.this (local-exec): |/- [2K[0A[0ELaunched: kijanikiosk-payments
+module.app_server["logs"].null_resource.this (local-exec): |/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-
+module.app_server["payments"].null_resource.this (local-exec): [2K[0A[0E
+module.app_server["payments"].null_resource.this: Creation complete after 1m55s [id=8724889991364113659]
+module.app_server["logs"].null_resource.this (local-exec): \|/-
+module.app_server["logs"].null_resource.this (local-exec): \
+module.app_server["logs"].null_resource.this (local-exec): |/
+module.app_server["logs"].null_resource.this (local-exec): -
+module.app_server["api"].null_resource.this (local-exec): -\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\
+module.app_server["api"].null_resource.this (local-exec): |/-\|/-\|/-\|/-\|
+module.app_server["api"].null_resource.this (local-exec): /
+module.app_server["api"].null_resource.this (local-exec): -\|/-
+module.app_server["api"].null_resource.this (local-exec): \|
+module.app_server["api"].null_resource.this (local-exec): /-\|/
+module.app_server["logs"].null_resource.this (local-exec): \|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/
+module.app_server["logs"].null_resource.this (local-exec): -
+module.app_server["api"].null_resource.this: Still creating... [02m00s elapsed]
+module.app_server["logs"].null_resource.this: Still creating... [02m00s elapsed]
+module.app_server["logs"].null_resource.this (local-exec): \|/-\|/-\|/-\|
+module.app_server["api"].null_resource.this (local-exec): -\|/-\|/-\|/-\|/-\|/-\|/-\|/-
+module.app_server["logs"].null_resource.this (local-exec): /-\|/-\|/-\|/-\|/-\|/-\|
+module.app_server["logs"].null_resource.this (local-exec): /-
+module.app_server["api"].null_resource.this (local-exec): \|/-\|/-\|/-\|/-\|
+module.app_server["logs"].null_resource.this (local-exec): \|/-\|
+module.app_server["logs"].null_resource.this (local-exec): /-\
+module.app_server["logs"].null_resource.this (local-exec): |/-\
+module.app_server["logs"].null_resource.this (local-exec): |/-\|/-\|/-
+module.app_server["logs"].null_resource.this (local-exec): \|
+module.app_server["api"].null_resource.this (local-exec): /-\|/-\|/-\|/-\|/-\|/-\|/-\|/-
+module.app_server["api"].null_resource.this (local-exec): \|/-\
+module.app_server["api"].null_resource.this (local-exec): |/-\
+module.app_server["api"].null_resource.this (local-exec): |
+module.app_server["api"].null_resource.this (local-exec): /-
+module.app_server["logs"].null_resource.this (local-exec): /-\|/-\|/-\|/-\|/-\|/
+module.app_server["api"].null_resource.this (local-exec): \|/-\|/-\|/-\
+module.app_server["api"].null_resource.this: Still creating... [02m10s elapsed]
+module.app_server["logs"].null_resource.this: Still creating... [02m10s elapsed]
+module.app_server["api"].null_resource.this (local-exec): |/-\|/-\|/-\|/-
+module.app_server["logs"].null_resource.this (local-exec): -\|/-\|/-\|/-\|/-\|/-\|/-\|/
+module.app_server["logs"].null_resource.this (local-exec): -
+module.app_server["api"].null_resource.this (local-exec): \|/-\|/-\|/-\|/-\|/-\|/
+module.app_server["api"].null_resource.this (local-exec): -\|/-\|/-\
+module.app_server["logs"].null_resource.this (local-exec): \|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\
+module.app_server["logs"].null_resource.this (local-exec): |/-\|/-\|/-\|
+module.app_server["api"].null_resource.this (local-exec): |/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-
+module.app_server["api"].null_resource.this: Still creating... [02m20s elapsed]
+module.app_server["logs"].null_resource.this: Still creating... [02m20s elapsed]
+module.app_server["api"].null_resource.this (local-exec): \|/-\|/-\|/-\|/-\
+module.app_server["api"].null_resource.this (local-exec): |/-\|
+module.app_server["api"].null_resource.this (local-exec): /-
+module.app_server["api"].null_resource.this (local-exec): \
+module.app_server["api"].null_resource.this (local-exec): |
+module.app_server["api"].null_resource.this (local-exec): /-\|/-\|/
+module.app_server["api"].null_resource.this (local-exec): -\|/
+module.app_server["api"].null_resource.this (local-exec): -
+module.app_server["logs"].null_resource.this (local-exec): /-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-
+module.app_server["logs"].null_resource.this (local-exec): \|/-\|/-\|/-\|/-
+module.app_server["logs"].null_resource.this (local-exec): \
+module.app_server["logs"].null_resource.this (local-exec): |/-\|/-\|/-
+module.app_server["api"].null_resource.this (local-exec): \|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/
+module.app_server["api"].null_resource.this (local-exec): -\|
+module.app_server["logs"].null_resource.this (local-exec): \|/-\|/-\|/-\|/-\| [2K[0A[0ELaunched: kijanikiosk-logs
+module.app_server["logs"].null_resource.this (local-exec): [2K[0A[0E
+module.app_server["logs"].null_resource.this: Creation complete after 2m28s [id=292365825346693064]
+module.app_server["api"].null_resource.this: Still creating... [02m30s elapsed]
+module.app_server["api"].null_resource.this (local-exec): /-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\ [2K[0A[0ELaunched: kijanikiosk-api
+module.app_server["api"].null_resource.this (local-exec): [2K[0A[0E
+module.app_server["api"].null_resource.this: Creation complete after 2m36s [id=5758934781844785641]
+module.app_server["payments"].data.external.ip: Reading...
+module.app_server["api"].data.external.ip: Reading...
+module.app_server["logs"].data.external.ip: Reading...
+module.app_server["api"].data.external.ip: Read complete after 1s [id=-]
+module.app_server["payments"].data.external.ip: Read complete after 1s [id=-]
+module.app_server["logs"].data.external.ip: Read complete after 1s [id=-]
+
+Apply complete! Resources: 3 added, 0 changed, 0 destroyed.
+
+Outputs:
+
+ansible_inventory = <<EOT
+[kijanikiosk]
+kijanikiosk-api ansible_host=10.198.60.184
+kijanikiosk-logs ansible_host=10.198.60.39
+kijanikiosk-payments ansible_host=10.198.60.223
+EOT
+server_ips = {
+  "api" = "10.198.60.184"
+  "logs" = "10.198.60.39"
+  "payments" = "10.198.60.223"
+}
+ssh_commands = {
+  "api" = "ssh -i ~/.ssh/id_rsa ubuntu@10.198.60.184"
+  "logs" = "ssh -i ~/.ssh/id_rsa ubuntu@10.198.60.39"
+  "payments" = "ssh -i ~/.ssh/id_rsa ubuntu@10.198.60.223"
+}
+
+==> [19:32:35] Writing inventory from Terraform outputs
+[kijanikiosk]
+kijanikiosk-api ansible_host=10.198.60.184
+kijanikiosk-logs ansible_host=10.198.60.39
+kijanikiosk-payments ansible_host=10.198.60.223
+
+==> [19:32:35] Cross-checking inventory IPs against Multipass
+kijanikiosk-api 10.198.60.184 matches Multipass
+kijanikiosk-logs 10.198.60.39 matches Multipass
+kijanikiosk-payments 10.198.60.223 matches Multipass
+
+==> [19:32:35] Waiting for SSH on all hosts (Challenge B)
+[WARNING]: Deprecation warnings can be disabled by setting `deprecation_warnings=False` in ansible.cfg.
+[DEPRECATION WARNING]: The '-o' argument is deprecated. This feature will be removed from ansible-core version 2.23. Use callback configuration to enable the oneline callback instead.
+[DEPRECATION WARNING]: oneline has been deprecated. Use another callback plugin, or vendor and/or move the oneline callback to a collection. This feature will be removed from ansible-core version 2.23.
+Origin: <unknown>
+
+oneline
+
+kijanikiosk-api | SUCCESS => {"changed": false,"elapsed": 1}
+kijanikiosk-payments | SUCCESS => {"changed": false,"elapsed": 1}
+kijanikiosk-logs | SUCCESS => {"changed": false,"elapsed": 1}
+
+==> [19:32:38] Ansible playbook
+[WARNING]: Deprecation warnings can be disabled by setting `deprecation_warnings=False` in ansible.cfg.
+[DEPRECATION WARNING]: ansible.builtin.apt_repository has been deprecated. Use deb822_repository instead. This feature will be removed from ansible-core version 2.25.
+Origin: /home/valencia/Desktop/Devops-16/Week3/week4/friday/ansible/kijanikiosk.yml:56:7
+
+54
+55     - name: Phase 1 | NodeSource repository
+56       ansible.builtin.apt_repository:
+         ^ column 7
+
+
+PLAY [Configure KijaniKiosk servers to the Week 3 standard] ********************
+
+TASK [Gathering Facts] *********************************************************
+ok: [kijanikiosk-logs]
+ok: [kijanikiosk-payments]
+ok: [kijanikiosk-api]
+
+TASK [Phase 1 | Base packages] *************************************************
+changed: [kijanikiosk-api]
+changed: [kijanikiosk-logs]
+changed: [kijanikiosk-payments]
+
+TASK [Phase 1 | Keyring directory] *********************************************
+ok: [kijanikiosk-logs]
+ok: [kijanikiosk-api]
+ok: [kijanikiosk-payments]
+
+TASK [Phase 1 | NodeSource signing key] ****************************************
+[WARNING]: Module remote_tmp /root/.ansible/tmp did not exist and was created with a mode of 0700, this may cause issues when running as another user. To avoid this, create the remote_tmp dir with the correct permissions manually
+changed: [kijanikiosk-api]
+changed: [kijanikiosk-logs]
+changed: [kijanikiosk-payments]
+
+TASK [Phase 1 | NodeSource repository] *****************************************
+changed: [kijanikiosk-payments]
+changed: [kijanikiosk-api]
+changed: [kijanikiosk-logs]
+
+TASK [Phase 1 | nginx and nodejs at pinned versions] ***************************
+changed: [kijanikiosk-payments]
+changed: [kijanikiosk-logs]
+changed: [kijanikiosk-api]
+
+TASK [Phase 1 | Hold pinned packages] ******************************************
+changed: [kijanikiosk-payments] => (item=nginx)
+changed: [kijanikiosk-api] => (item=nginx)
+changed: [kijanikiosk-logs] => (item=nginx)
+changed: [kijanikiosk-payments] => (item=nodejs)
+changed: [kijanikiosk-api] => (item=nodejs)
+changed: [kijanikiosk-logs] => (item=nodejs)
+
+TASK [Phase 2 | Shared application group] **************************************
+changed: [kijanikiosk-payments]
+changed: [kijanikiosk-api]
+changed: [kijanikiosk-logs]
+
+TASK [Phase 2 | Per-service private groups] ************************************
+changed: [kijanikiosk-logs] => (item=kk-api)
+changed: [kijanikiosk-api] => (item=kk-api)
+changed: [kijanikiosk-payments] => (item=kk-api)
+changed: [kijanikiosk-logs] => (item=kk-payments)
+changed: [kijanikiosk-api] => (item=kk-payments)
+changed: [kijanikiosk-payments] => (item=kk-payments)
+changed: [kijanikiosk-api] => (item=kk-logs)
+changed: [kijanikiosk-payments] => (item=kk-logs)
+changed: [kijanikiosk-logs] => (item=kk-logs)
+
+TASK [Phase 2 | Service accounts (no login, no home)] **************************
+changed: [kijanikiosk-api] => (item=kk-api)
+changed: [kijanikiosk-payments] => (item=kk-api)
+changed: [kijanikiosk-logs] => (item=kk-api)
+changed: [kijanikiosk-payments] => (item=kk-payments)
+changed: [kijanikiosk-api] => (item=kk-payments)
+changed: [kijanikiosk-logs] => (item=kk-payments)
+changed: [kijanikiosk-payments] => (item=kk-logs)
+changed: [kijanikiosk-api] => (item=kk-logs)
+changed: [kijanikiosk-logs] => (item=kk-logs)
+
+TASK [Phase 2 | Operator account in the application group] *********************
+changed: [kijanikiosk-api]
+changed: [kijanikiosk-payments]
+changed: [kijanikiosk-logs]
+
+TASK [Phase 3 | Directories with owners and modes] *****************************
+changed: [kijanikiosk-api] => (item=/opt/kijanikiosk)
+changed: [kijanikiosk-logs] => (item=/opt/kijanikiosk)
+changed: [kijanikiosk-payments] => (item=/opt/kijanikiosk)
+changed: [kijanikiosk-api] => (item=/opt/kijanikiosk/shared)
+changed: [kijanikiosk-logs] => (item=/opt/kijanikiosk/shared)
+changed: [kijanikiosk-payments] => (item=/opt/kijanikiosk/shared)
+changed: [kijanikiosk-api] => (item=/opt/kijanikiosk/scripts)
+changed: [kijanikiosk-payments] => (item=/opt/kijanikiosk/scripts)
+changed: [kijanikiosk-logs] => (item=/opt/kijanikiosk/scripts)
+changed: [kijanikiosk-api] => (item=/opt/kijanikiosk/api)
+changed: [kijanikiosk-payments] => (item=/opt/kijanikiosk/api)
+changed: [kijanikiosk-api] => (item=/opt/kijanikiosk/payments)
+changed: [kijanikiosk-logs] => (item=/opt/kijanikiosk/api)
+changed: [kijanikiosk-payments] => (item=/opt/kijanikiosk/payments)
+changed: [kijanikiosk-api] => (item=/opt/kijanikiosk/logs)
+changed: [kijanikiosk-logs] => (item=/opt/kijanikiosk/payments)
+changed: [kijanikiosk-payments] => (item=/opt/kijanikiosk/logs)
+changed: [kijanikiosk-api] => (item=/opt/kijanikiosk/config)
+changed: [kijanikiosk-payments] => (item=/opt/kijanikiosk/config)
+changed: [kijanikiosk-api] => (item=/opt/kijanikiosk/health)
+changed: [kijanikiosk-logs] => (item=/opt/kijanikiosk/logs)
+changed: [kijanikiosk-api] => (item=/opt/kijanikiosk/shared/logs)
+changed: [kijanikiosk-payments] => (item=/opt/kijanikiosk/health)
+changed: [kijanikiosk-logs] => (item=/opt/kijanikiosk/config)
+changed: [kijanikiosk-payments] => (item=/opt/kijanikiosk/shared/logs)
+changed: [kijanikiosk-logs] => (item=/opt/kijanikiosk/health)
+changed: [kijanikiosk-logs] => (item=/opt/kijanikiosk/shared/logs)
+
+TASK [Phase 3 | Environment files (root-owned, group-readable)] ****************
+changed: [kijanikiosk-api] => (item=db.env)
+changed: [kijanikiosk-logs] => (item=logs.env)
+changed: [kijanikiosk-payments] => (item=db.env)
+changed: [kijanikiosk-api] => (item=api.env)
+changed: [kijanikiosk-payments] => (item=payments-api.env)
+
+TASK [Phase 3 | shared/logs named ACL entries (access and default)] ************
+changed: [kijanikiosk-api] => (item=kk-api rwx default=False)
+changed: [kijanikiosk-logs] => (item=kk-api rwx default=False)
+changed: [kijanikiosk-payments] => (item=kk-api rwx default=False)
+changed: [kijanikiosk-api] => (item=kk-api rwx default=True)
+changed: [kijanikiosk-logs] => (item=kk-api rwx default=True)
+changed: [kijanikiosk-payments] => (item=kk-api rwx default=True)
+changed: [kijanikiosk-api] => (item=kk-payments r-x default=False)
+changed: [kijanikiosk-logs] => (item=kk-payments r-x default=False)
+changed: [kijanikiosk-payments] => (item=kk-payments r-x default=False)
+changed: [kijanikiosk-api] => (item=kk-payments r-x default=True)
+changed: [kijanikiosk-logs] => (item=kk-payments r-x default=True)
+changed: [kijanikiosk-api] => (item=ubuntu r-x default=False)
+changed: [kijanikiosk-payments] => (item=kk-payments r-x default=True)
+changed: [kijanikiosk-logs] => (item=ubuntu r-x default=False)
+changed: [kijanikiosk-api] => (item=ubuntu r-x default=True)
+changed: [kijanikiosk-payments] => (item=ubuntu r-x default=False)
+changed: [kijanikiosk-logs] => (item=ubuntu r-x default=True)
+changed: [kijanikiosk-payments] => (item=ubuntu r-x default=True)
+
+TASK [Phase 3 | shared/logs explicit ACL mask (access and default)] ************
+ok: [kijanikiosk-api] => (item=False)
+ok: [kijanikiosk-payments] => (item=False)
+ok: [kijanikiosk-logs] => (item=False)
+ok: [kijanikiosk-api] => (item=True)
+ok: [kijanikiosk-payments] => (item=True)
+ok: [kijanikiosk-logs] => (item=True)
+
+TASK [Phase 4 | Placeholder application] ***************************************
+changed: [kijanikiosk-api]
+changed: [kijanikiosk-logs]
+changed: [kijanikiosk-payments]
+
+TASK [Phase 4 | systemd unit from template] ************************************
+changed: [kijanikiosk-api]
+changed: [kijanikiosk-payments]
+changed: [kijanikiosk-logs]
+
+TASK [Phase 4 | Apply pending unit and config changes now] *********************
+
+TASK [Phase 4 | Apply pending unit and config changes now] *********************
+
+TASK [Phase 4 | Apply pending unit and config changes now] *********************
+
+RUNNING HANDLER [Reload systemd] ***********************************************
+ok: [kijanikiosk-api]
+ok: [kijanikiosk-logs]
+ok: [kijanikiosk-payments]
+
+RUNNING HANDLER [Restart service] **********************************************
+changed: [kijanikiosk-api]
+changed: [kijanikiosk-logs]
+changed: [kijanikiosk-payments]
+
+TASK [Phase 4 | Service enabled and running] ***********************************
+changed: [kijanikiosk-api]
+changed: [kijanikiosk-logs]
+changed: [kijanikiosk-payments]
+
+TASK [Phase 5 | Default policies] **********************************************
+ok: [kijanikiosk-api] => (item={'policy': 'deny', 'direction': 'incoming'})
+ok: [kijanikiosk-logs] => (item={'policy': 'deny', 'direction': 'incoming'})
+ok: [kijanikiosk-payments] => (item={'policy': 'deny', 'direction': 'incoming'})
+ok: [kijanikiosk-logs] => (item={'policy': 'allow', 'direction': 'outgoing'})
+ok: [kijanikiosk-api] => (item={'policy': 'allow', 'direction': 'outgoing'})
+ok: [kijanikiosk-payments] => (item={'policy': 'allow', 'direction': 'outgoing'})
+
+TASK [Phase 5 | Rules] *********************************************************
+changed: [kijanikiosk-api] => (item=allow 22 SSH from operator network (Ansible host))
+changed: [kijanikiosk-logs] => (item=allow 22 SSH from operator network (Ansible host))
+changed: [kijanikiosk-payments] => (item=allow 22 SSH from operator network (Ansible host))
+changed: [kijanikiosk-api] => (item=allow 22 SSH from monitoring/admin subnet)
+changed: [kijanikiosk-logs] => (item=allow 22 SSH from monitoring/admin subnet)
+changed: [kijanikiosk-payments] => (item=allow 22 SSH from monitoring/admin subnet)
+changed: [kijanikiosk-logs] => (item=allow 80 HTTP from monitoring subnet)
+changed: [kijanikiosk-api] => (item=allow 80 HTTP from monitoring subnet)
+changed: [kijanikiosk-payments] => (item=allow 80 HTTP from monitoring subnet)
+changed: [kijanikiosk-logs] => (item=allow 3002 kk-logs health check from monitoring subnet)
+changed: [kijanikiosk-api] => (item=allow 3000 kk-api health check from monitoring subnet)
+changed: [kijanikiosk-logs] => (item=allow 3002 kk-logs loopback for nginx proxy)
+changed: [kijanikiosk-payments] => (item=allow 3001 kk-payments health check from monitoring subnet)
+changed: [kijanikiosk-api] => (item=allow 3000 kk-api loopback for nginx proxy)
+changed: [kijanikiosk-logs] => (item=deny 3002 kk-logs internal port, no external access)
+changed: [kijanikiosk-payments] => (item=allow 3001 kk-payments loopback for nginx proxy)
+changed: [kijanikiosk-api] => (item=deny 3000 kk-api internal port, no external access)
+changed: [kijanikiosk-payments] => (item=deny 3001 kk-payments internal port, no external access)
+
+TASK [Phase 5 | Enable firewall] ***********************************************
+changed: [kijanikiosk-logs]
+changed: [kijanikiosk-payments]
+changed: [kijanikiosk-api]
+
+TASK [Phase 6 | Persistent journal directory] **********************************
+ok: [kijanikiosk-logs]
+ok: [kijanikiosk-payments]
+ok: [kijanikiosk-api]
+
+TASK [Phase 6 | journald drop-in directory] ************************************
+changed: [kijanikiosk-logs]
+changed: [kijanikiosk-api]
+changed: [kijanikiosk-payments]
+
+TASK [Phase 6 | journald settings] *********************************************
+changed: [kijanikiosk-payments]
+changed: [kijanikiosk-logs]
+changed: [kijanikiosk-api]
+
+TASK [Phase 7 | logrotate config (validated before it is installed)] ***********
+changed: [kijanikiosk-logs]
+changed: [kijanikiosk-api]
+changed: [kijanikiosk-payments]
+
+TASK [Phase 7 | Apply journald change before verification] *********************
+
+TASK [Phase 7 | Apply journald change before verification] *********************
+
+TASK [Phase 7 | Apply journald change before verification] *********************
+
+RUNNING HANDLER [Restart journald] *********************************************
+changed: [kijanikiosk-logs]
+changed: [kijanikiosk-api]
+changed: [kijanikiosk-payments]
+
+TASK [Phase 8 | Service answers on its port] ***********************************
+ok: [kijanikiosk-logs]
+ok: [kijanikiosk-payments]
+ok: [kijanikiosk-api]
+
+TASK [Phase 8 | Health file (no timestamp, so a healthy re-run changes nothing)] ***
+changed: [kijanikiosk-logs]
+changed: [kijanikiosk-api]
+changed: [kijanikiosk-payments]
+
+TASK [Phase 8 | Access model checks] *******************************************
+[WARNING]: Unable to use '/nonexistent/.ansible/tmp' as temporary directory, falling back to system default: [Errno 13] Permission denied: '/nonexistent'
+
+Unable to use '/nonexistent/.ansible/tmp' as temporary directory, falling back to system default.
+
+<<< caused by >>>
+
+[Errno 13] Permission denied: '/nonexistent'
+
+ok: [kijanikiosk-logs] => (item=kk-api can write shared/logs)
+ok: [kijanikiosk-payments] => (item=kk-api can write shared/logs)
+ok: [kijanikiosk-api] => (item=kk-api can write shared/logs)
+ok: [kijanikiosk-logs] => (item=kk-payments cannot write shared/logs)
+ok: [kijanikiosk-payments] => (item=kk-payments cannot write shared/logs)
+ok: [kijanikiosk-api] => (item=kk-payments cannot write shared/logs)
+ok: [kijanikiosk-logs] => (item=kk-payments can read shared/logs)
+ok: [kijanikiosk-payments] => (item=kk-payments can read shared/logs)
+ok: [kijanikiosk-api] => (item=kk-payments can read shared/logs)
+ok: [kijanikiosk-logs] => (item=kk-api cannot read payments code)
+ok: [kijanikiosk-api] => (item=kk-api cannot read payments code)
+ok: [kijanikiosk-logs] => (item=kk-payments cannot read api code)
+ok: [kijanikiosk-payments] => (item=kk-api cannot read payments code)
+ok: [kijanikiosk-api] => (item=kk-payments cannot read api code)
+ok: [kijanikiosk-logs] => (item=kk-api can read health file)
+ok: [kijanikiosk-payments] => (item=kk-payments cannot read api code)
+ok: [kijanikiosk-api] => (item=kk-api can read health file)
+ok: [kijanikiosk-payments] => (item=kk-api can read health file)
+
+TASK [Phase 8 | Service account can read its own env files (Challenge D)] ******
+ok: [kijanikiosk-api] => (item=db.env)
+ok: [kijanikiosk-logs] => (item=logs.env)
+ok: [kijanikiosk-payments] => (item=db.env)
+ok: [kijanikiosk-api] => (item=api.env)
+ok: [kijanikiosk-payments] => (item=payments-api.env)
+
+TASK [Phase 8 | systemd security score] ****************************************
+ok: [kijanikiosk-logs]
+ok: [kijanikiosk-api]
+ok: [kijanikiosk-payments]
+
+TASK [Phase 8 | Report score] **************************************************
+ok: [kijanikiosk-api] => {
+    "msg": "kk-api: → Overall exposure level for kk-api.service: 3.0 OK 🙂"
+}
+ok: [kijanikiosk-logs] => {
+    "msg": "kk-logs: → Overall exposure level for kk-logs.service: 3.0 OK 🙂"
+}
+ok: [kijanikiosk-payments] => {
+    "msg": "kk-payments: → Overall exposure level for kk-payments.service: 2.5 OK 🙂"
+}
+
+PLAY RECAP *********************************************************************
+kijanikiosk-api            : ok=34   changed=23   unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+kijanikiosk-logs           : ok=34   changed=23   unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+kijanikiosk-payments       : ok=34   changed=23   unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+
+
+==> [19:34:57] Pipeline complete

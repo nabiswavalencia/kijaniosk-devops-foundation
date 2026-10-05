@@ -1,0 +1,6 @@
+.terraform/
+*.tfstate
+*.tfstate.*
+minio-data/
+*.retry
+tfplan
