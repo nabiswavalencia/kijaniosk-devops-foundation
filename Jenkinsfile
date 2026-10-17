@@ -36,7 +36,7 @@ pipeline {
         stage('Build') {
             steps {
                 dir("${APP_DIR}") {
-                    sh 'npm run build-missing'
+                    sh 'npm run build'
                     sh '''
                         set -e
                         test -n "$(ls -A ${BUILD_DIR} 2>/dev/null)" || { echo "ERROR: ${BUILD_DIR}/ missing or empty"; exit 1; }
