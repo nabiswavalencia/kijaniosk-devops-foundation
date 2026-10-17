@@ -53,15 +53,6 @@ pipeline {
                 archiveArtifacts artifacts: "${APP_DIR}/${BUILD_DIR}/**", fingerprint: true, onlyIfSuccessful: true
             }
         }
-        stage('Credential Test') {
-            steps {
-                withCredentials([usernamePassword(credentialsId: 'nexus-credentials',
-                                                  usernameVariable: 'NEXUS_USER',
-                                                  passwordVariable: 'NEXUS_PASS')]) {
-                    sh 'echo "User: ${NEXUS_USER} Pass: ${NEXUS_PASS}"'
-                }
-            }
-        } // END CREDENTIAL TEST
         stage('Publish') {
             steps {
                 dir("${APP_DIR}") {
