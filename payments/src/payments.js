@@ -15,4 +15,3 @@ function validatePayment(payment) {
 }
 
 module.exports = { validatePayment };
-const broken = ;
