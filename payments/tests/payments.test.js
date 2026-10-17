@@ -21,7 +21,3 @@ describe('validatePayment', () => {
     expect(validatePayment(undefined).valid).toBe(false);
   });
 });
-
-test('ci-pipeline-verification: deliberate failure', () => {
-  expect(true).toBe(false);
-});
