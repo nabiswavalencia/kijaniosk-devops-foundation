@@ -1,13 +1,18 @@
 pipeline {
-    agent any
+    agent {
+        docker {
+            image 'node:22.23.3-alpine'
+        }
+    }
 
     environment {
         NODE_ENV         = 'test'
         APP_DIR          = 'payments'
         BUILD_DIR        = 'dist'
         APP_NAME         = 'kijanikiosk-payments'
+        NPM_CONFIG_CACHE = "${WORKSPACE}/.npm-cache"
         PKG_VERSION      = sh(script: "node -p \"require('./payments/package.json').version\"", returnStdout: true).trim()
-        GIT_SHORT        = sh(script: 'git rev-parse --short HEAD', returnStdout: true).trim()
+        GIT_SHORT        = sh(script: 'git rev-parse --short HEAD 2>/dev/null || echo "$GIT_COMMIT" | cut -c1-7', returnStdout: true).trim()
         ARTIFACT_VERSION = "${PKG_VERSION}-${GIT_SHORT}"
         NEXUS_URL        = 'http://172.17.0.1:8081/repository/npm-kijanikiosk'
     }
@@ -15,36 +20,53 @@ pipeline {
     options {
         timeout(time: 15, unit: 'MINUTES')
         buildDiscarder(logRotator(numToKeepStr: '10'))
-        disableConcurrentBuilds()
+        disableConcurrentBuilds(abortPrevious: false)
     }
 
     stages {
-        stage('Build') {
+        stage('Lint') {
             steps {
                 dir("${APP_DIR}") {
-                    echo "Installing dependencies for ${APP_NAME} ${ARTIFACT_VERSION}..."
+                    sh 'node --version'
                     sh 'npm ci'
-                    sh 'npm run build'
-                    sh '''
-                        set -e
-                        test -d "${BUILD_DIR}" || { echo "ERROR: build directory not found"; exit 1; }
-                        echo "Build output: $(ls ${BUILD_DIR} | wc -l) files in ${BUILD_DIR}/"
-                    '''
+                    sh 'npm run lint'
                 }
             }
         }
-        stage('Test') {
+        stage('Build') {
             steps {
                 dir("${APP_DIR}") {
+                    sh 'npm run build'
                     sh '''
                         set -e
-                        npm test
+                        test -n "$(ls -A ${BUILD_DIR} 2>/dev/null)" || { echo "ERROR: ${BUILD_DIR}/ missing or empty"; exit 1; }
+                        echo "Build output: $(ls ${BUILD_DIR} | wc -l) files in ${BUILD_DIR}/"
                     '''
+                    stash name: 'build-output', includes: "${BUILD_DIR}/**,package.json"
                 }
             }
-            post {
-                always {
-                    junit allowEmptyResults: true, testResults: "${APP_DIR}/test-results/*.xml"
+        }
+        stage('Verify') {
+            parallel {
+                stage('Test') {
+                    steps {
+                        dir("${APP_DIR}") {
+                            unstash 'build-output'
+                            sh 'npm test'
+                        }
+                    }
+                    post {
+                        always {
+                            junit allowEmptyResults: true, testResults: "${APP_DIR}/test-results/*.xml"
+                        }
+                    }
+                }
+                stage('Security Audit') {
+                    steps {
+                        dir("${APP_DIR}") {
+                            sh 'npm audit --audit-level=high'
+                        }
+                    }
                 }
             }
         }
@@ -80,7 +102,10 @@ pipeline {
             echo "Artifact URL: ${NEXUS_URL}/${APP_NAME}/-/${APP_NAME}-${ARTIFACT_VERSION}.tgz"
         }
         failure {
-            echo "Pipeline FAILED at build ${BUILD_NUMBER} - check logs at ${BUILD_URL}"
+            echo "FAILURE NOTIFICATION: ${APP_NAME} #${BUILD_NUMBER} failed - review ${BUILD_URL}console (Slack/email would be sent here)"
+        }
+        changed {
+            echo "Build status changed to ${currentBuild.currentResult} - ${JOB_NAME} #${BUILD_NUMBER}"
         }
         always {
             cleanWs()
