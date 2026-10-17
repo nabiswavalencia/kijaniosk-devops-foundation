@@ -78,7 +78,7 @@ pipeline {
         stage('Publish') {
             steps {
                 dir("${APP_DIR}") {
-                    withCredentials([usernamePassword(credentialsId: 'wrong-id',
+                    withCredentials([usernamePassword(credentialsId: 'nexus-credentials',
                                                       usernameVariable: 'NEXUS_USER',
                                                       passwordVariable: 'NEXUS_PASS')]) {
                         sh '''
