@@ -1,0 +1,43 @@
+# kk-payments Deployment
+# Date: 2026-11-03 19:03:02 UTC
+
+=== [22:03:02] Image in manifest (must match registry-push.txt) ===
+          image: docker.io/lenceneema/kk-payments:1.0.0-c463f43
+
+=== [22:03:02] Secret present ===
+NAME                          TYPE                             DATA   AGE
+kijani-registry-credentials   kubernetes.io/dockerconfigjson   1      21s
+
+=== [22:03:02] Dry run ===
+$ k apply --dry-run=client -f /home/valencia/kk-week8/week8/friday/kk-payments-deployment.yaml
+deployment.apps/kk-payments created (dry run)
+(exit 0)
+
+=== [22:03:02] Apply ===
+$ k apply -f /home/valencia/kk-week8/week8/friday/kk-payments-deployment.yaml
+deployment.apps/kk-payments created
+(exit 0)
+$ k rollout status deployment/kk-payments --timeout=180s
+Waiting for deployment "kk-payments" rollout to finish: 0 of 2 updated replicas are available...
+Waiting for deployment "kk-payments" rollout to finish: 1 of 2 updated replicas are available...
+deployment "kk-payments" successfully rolled out
+(exit 0)
+Both Pods Running after 32s
+
+=== [22:03:34] Pods ===
+NAME                           READY   STATUS    RESTARTS   AGE   IP           NODE       NOMINATED NODE   READINESS GATES
+kk-payments-58f64fdf78-4r4fp   1/1     Running   0          32s   10.244.0.3   minikube   <none>           <none>
+kk-payments-58f64fdf78-kj2sr   1/1     Running   0          32s   10.244.0.4   minikube   <none>           <none>
+
+=== [22:03:34] Deployment ===
+NAME          READY   UP-TO-DATE   AVAILABLE   AGE
+kk-payments   2/2     2            2           33s
+
+=== [22:03:35] ReplicaSet ===
+NAME                     DESIRED   CURRENT   READY   AGE
+kk-payments-58f64fdf78   2         2         2       33s
+
+=== [22:03:35] Running as non-root inside the cluster ===
+$ k exec pod/kk-payments-58f64fdf78-4r4fp -- whoami
+kijani
+(exit 0)

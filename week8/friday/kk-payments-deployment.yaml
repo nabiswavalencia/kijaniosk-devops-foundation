@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kk-payments
+  labels:
+    app: kk-payments
+    week: "8"
+spec:
+  replicas: 2                       # a payments service never runs as a single copy
+  selector:
+    matchLabels:
+      app: kk-payments              # must match template.metadata.labels
+  template:
+    metadata:
+      labels:
+        app: kk-payments
+    spec:
+      imagePullSecrets:
+        - name: kijani-registry-credentials   # reference only; the token lives in the cluster Secret
+      containers:
+        - name: kk-payments
+          # Full registry address and immutable <semver>-<git-sha> tag.
+          # run-week8.sh writes the tag it pushed; it must match registry-push.txt exactly.
+          image: docker.io/lenceneema/kk-payments:1.0.0-c463f43
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 3001
+          env:
+            - name: NODE_ENV
+              value: "production"
+            - name: PORT
+              value: "3001"
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "100m"
+            limits:
+              memory: "256Mi"
+              cpu: "500m"

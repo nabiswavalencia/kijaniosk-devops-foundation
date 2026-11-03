@@ -1,0 +1,307 @@
+# kk-payments registry push and pull verification
+# Date: 2026-11-03 19:01:32 UTC
+# Registry: Docker Hub, private repository lenceneema/kk-payments
+# Login was done beforehand with 'docker login' using an access token via stdin; no credentials appear here.
+
+=== [22:01:32] Version string ===
+$ PKG_VERSION=$(node -p "require('./package.json').version")
+1.0.0
+$ GIT_SHORT=$(git rev-parse --short=7 HEAD)
+c463f43
+$ IMAGE_TAG="${PKG_VERSION}-${GIT_SHORT}"
+1.0.0-c463f43
+
+=== [22:01:32] Tag and push ===
+$ docker tag kijanikiosk/kk-payments:1.0.0-c463f43 docker.io/lenceneema/kk-payments:1.0.0-c463f43
+(exit 0)
+$ docker push docker.io/lenceneema/kk-payments:1.0.0-c463f43
+The push refers to repository [docker.io/lenceneema/kk-payments]
+564608eabd93: Waiting
+44136fa355b3: Waiting
+63e7e49699e8: Waiting
+72a99923d6ff: Waiting
+63e7e49699e8: Waiting
+72a99923d6ff: Waiting
+564608eabd93: Waiting
+44136fa355b3: Waiting
+72a99923d6ff: Waiting
+564608eabd93: Waiting
+44136fa355b3: Waiting
+63e7e49699e8: Waiting
+72a99923d6ff: Waiting
+564608eabd93: Waiting
+44136fa355b3: Waiting
+63e7e49699e8: Waiting
+564608eabd93: Waiting
+44136fa355b3: Waiting
+63e7e49699e8: Waiting
+72a99923d6ff: Waiting
+72a99923d6ff: Waiting
+564608eabd93: Waiting
+44136fa355b3: Waiting
+63e7e49699e8: Waiting
+44136fa355b3: Waiting
+63e7e49699e8: Waiting
+72a99923d6ff: Waiting
+564608eabd93: Waiting
+72a99923d6ff: Waiting
+564608eabd93: Waiting
+44136fa355b3: Waiting
+63e7e49699e8: Waiting
+72a99923d6ff: Waiting
+564608eabd93: Waiting
+44136fa355b3: Waiting
+63e7e49699e8: Waiting
+564608eabd93: Waiting
+44136fa355b3: Waiting
+63e7e49699e8: Waiting
+72a99923d6ff: Waiting
+44136fa355b3: Waiting
+63e7e49699e8: Waiting
+72a99923d6ff: Waiting
+564608eabd93: Waiting
+72a99923d6ff: Waiting
+564608eabd93: Waiting
+44136fa355b3: Waiting
+63e7e49699e8: Waiting
+72a99923d6ff: Waiting
+564608eabd93: Waiting
+44136fa355b3: Waiting
+63e7e49699e8: Waiting
+63e7e49699e8: Waiting
+72a99923d6ff: Waiting
+564608eabd93: Waiting
+44136fa355b3: Waiting
+72a99923d6ff: Waiting
+564608eabd93: Waiting
+44136fa355b3: Waiting
+63e7e49699e8: Waiting
+72a99923d6ff: Waiting
+564608eabd93: Waiting
+44136fa355b3: Waiting
+63e7e49699e8: Waiting
+44136fa355b3: Waiting
+63e7e49699e8: Waiting
+72a99923d6ff: Waiting
+564608eabd93: Waiting
+72a99923d6ff: Waiting
+564608eabd93: Waiting
+44136fa355b3: Waiting
+63e7e49699e8: Waiting
+564608eabd93: Waiting
+44136fa355b3: Waiting
+63e7e49699e8: Waiting
+72a99923d6ff: Waiting
+44136fa355b3: Waiting
+63e7e49699e8: Waiting
+72a99923d6ff: Waiting
+564608eabd93: Waiting
+72a99923d6ff: Waiting
+564608eabd93: Waiting
+44136fa355b3: Waiting
+63e7e49699e8: Waiting
+564608eabd93: Waiting
+44136fa355b3: Waiting
+63e7e49699e8: Waiting
+72a99923d6ff: Waiting
+72a99923d6ff: Waiting
+564608eabd93: Waiting
+44136fa355b3: Waiting
+63e7e49699e8: Waiting
+44136fa355b3: Waiting
+63e7e49699e8: Waiting
+72a99923d6ff: Waiting
+564608eabd93: Waiting
+564608eabd93: Waiting
+44136fa355b3: Waiting
+63e7e49699e8: Waiting
+72a99923d6ff: Waiting
+63e7e49699e8: Waiting
+72a99923d6ff: Waiting
+564608eabd93: Waiting
+44136fa355b3: Waiting
+72a99923d6ff: Waiting
+564608eabd93: Waiting
+44136fa355b3: Waiting
+63e7e49699e8: Waiting
+72a99923d6ff: Waiting
+564608eabd93: Waiting
+44136fa355b3: Waiting
+63e7e49699e8: Waiting
+564608eabd93: Waiting
+44136fa355b3: Waiting
+63e7e49699e8: Waiting
+72a99923d6ff: Waiting
+72a99923d6ff: Waiting
+564608eabd93: Waiting
+44136fa355b3: Waiting
+63e7e49699e8: Waiting
+72a99923d6ff: Waiting
+564608eabd93: Waiting
+44136fa355b3: Waiting
+63e7e49699e8: Waiting
+72a99923d6ff: Waiting
+564608eabd93: Waiting
+44136fa355b3: Waiting
+63e7e49699e8: Waiting
+72a99923d6ff: Waiting
+564608eabd93: Waiting
+44136fa355b3: Waiting
+63e7e49699e8: Waiting
+72a99923d6ff: Waiting
+564608eabd93: Waiting
+44136fa355b3: Waiting
+63e7e49699e8: Waiting
+72a99923d6ff: Waiting
+564608eabd93: Waiting
+44136fa355b3: Waiting
+63e7e49699e8: Waiting
+72a99923d6ff: Waiting
+564608eabd93: Waiting
+44136fa355b3: Waiting
+63e7e49699e8: Waiting
+63e7e49699e8: Waiting
+72a99923d6ff: Waiting
+564608eabd93: Waiting
+44136fa355b3: Waiting
+72a99923d6ff: Waiting
+564608eabd93: Waiting
+44136fa355b3: Waiting
+63e7e49699e8: Waiting
+72a99923d6ff: Waiting
+564608eabd93: Waiting
+44136fa355b3: Waiting
+63e7e49699e8: Waiting
+564608eabd93: Waiting
+44136fa355b3: Waiting
+63e7e49699e8: Waiting
+72a99923d6ff: Waiting
+63e7e49699e8: Waiting
+72a99923d6ff: Waiting
+564608eabd93: Waiting
+44136fa355b3: Waiting
+72a99923d6ff: Waiting
+564608eabd93: Waiting
+44136fa355b3: Waiting
+63e7e49699e8: Waiting
+63e7e49699e8: Waiting
+72a99923d6ff: Waiting
+564608eabd93: Waiting
+44136fa355b3: Waiting
+72a99923d6ff: Waiting
+564608eabd93: Waiting
+44136fa355b3: Waiting
+63e7e49699e8: Waiting
+72a99923d6ff: Waiting
+564608eabd93: Waiting
+44136fa355b3: Waiting
+63e7e49699e8: Waiting
+72a99923d6ff: Waiting
+564608eabd93: Waiting
+44136fa355b3: Waiting
+63e7e49699e8: Waiting
+44136fa355b3: Waiting
+44136fa355b3: Waiting
+44136fa355b3: Waiting
+44136fa355b3: Waiting
+44136fa355b3: Waiting
+44136fa355b3: Waiting
+44136fa355b3: Waiting
+44136fa355b3: Waiting
+44136fa355b3: Waiting
+44136fa355b3: Waiting
+44136fa355b3: Waiting
+c72d1bf5a5dd: Waiting
+44136fa355b3: Mounted from kicbase/stable
+c72d1bf5a5dd: Waiting
+8741cc11ea40: Waiting
+c72d1bf5a5dd: Waiting
+8741cc11ea40: Waiting
+c72d1bf5a5dd: Waiting
+8741cc11ea40: Waiting
+c72d1bf5a5dd: Waiting
+8741cc11ea40: Waiting
+c72d1bf5a5dd: Waiting
+8741cc11ea40: Waiting
+c72d1bf5a5dd: Waiting
+8741cc11ea40: Waiting
+32bfa41e5005: Waiting
+c72d1bf5a5dd: Waiting
+8741cc11ea40: Waiting
+564608eabd93: Pushed
+32bfa41e5005: Waiting
+32bfa41e5005: Waiting
+32bfa41e5005: Waiting
+32bfa41e5005: Waiting
+32bfa41e5005: Waiting
+32bfa41e5005: Waiting
+32bfa41e5005: Waiting
+32bfa41e5005: Waiting
+c72d1bf5a5dd: Pushed
+1e55228a3fe0: Waiting
+1e55228a3fe0: Waiting
+1e55228a3fe0: Waiting
+1e55228a3fe0: Waiting
+1e55228a3fe0: Waiting
+1e55228a3fe0: Waiting
+1e55228a3fe0: Waiting
+1e55228a3fe0: Waiting
+32bfa41e5005: Pushed
+bf5e21af6861: Waiting
+bf5e21af6861: Waiting
+bf5e21af6861: Waiting
+bf5e21af6861: Waiting
+bf5e21af6861: Waiting
+bf5e21af6861: Waiting
+bf5e21af6861: Waiting
+1e55228a3fe0: Pushed
+8741cc11ea40: Pushed
+bf5e21af6861: Pushed
+63e7e49699e8: Pushed
+72a99923d6ff: Pushed
+1.0.0-c463f43: digest: sha256:9c9739e6bb397cc6daa80f0c706bae055c665da9a551f55f4ecaf7291fa39a98 size: 856
+(exit 0)
+Local image ID: sha256:9c9739e6bb397cc6daa80f0c706bae055c665da9a551f55f4ecaf7291fa39a98
+
+=== [22:02:09] Delete every local copy, then pull from the registry ===
+$ docker rmi docker.io/lenceneema/kk-payments:1.0.0-c463f43 kijanikiosk/kk-payments:1.0.0-c463f43
+Untagged: lenceneema/kk-payments:1.0.0-c463f43
+Untagged: kijanikiosk/kk-payments:1.0.0-c463f43
+Deleted: sha256:9c9739e6bb397cc6daa80f0c706bae055c665da9a551f55f4ecaf7291fa39a98
+(exit 0)
+(no local copy of 1.0.0-c463f43 remains)
+$ docker pull docker.io/lenceneema/kk-payments:1.0.0-c463f43
+1.0.0-c463f43: Pulling from lenceneema/kk-payments
+bf5e21af6861: Pulling fs layer
+c72d1bf5a5dd: Pulling fs layer
+63e7e49699e8: Pulling fs layer
+72a99923d6ff: Pulling fs layer
+32bfa41e5005: Pulling fs layer
+1e55228a3fe0: Pulling fs layer
+8741cc11ea40: Pulling fs layer
+44136fa355b3: Already exists
+72a99923d6ff: Already exists
+8741cc11ea40: Already exists
+bf5e21af6861: Already exists
+c72d1bf5a5dd: Already exists
+63e7e49699e8: Already exists
+32bfa41e5005: Already exists
+1e55228a3fe0: Already exists
+63e7e49699e8: Pull complete
+72a99923d6ff: Pull complete
+c72d1bf5a5dd: Pull complete
+8741cc11ea40: Pull complete
+32bfa41e5005: Pull complete
+1e55228a3fe0: Pull complete
+bf5e21af6861: Pull complete
+564608eabd93: Download complete
+Digest: sha256:9c9739e6bb397cc6daa80f0c706bae055c665da9a551f55f4ecaf7291fa39a98
+Status: Downloaded newer image for lenceneema/kk-payments:1.0.0-c463f43
+docker.io/lenceneema/kk-payments:1.0.0-c463f43
+(exit 0)
+Pulled image ID: sha256:9c9739e6bb397cc6daa80f0c706bae055c665da9a551f55f4ecaf7291fa39a98
+PASS: pulled image is identical to the one built
+RepoDigests: [lenceneema/kk-payments@sha256:9c9739e6bb397cc6daa80f0c706bae055c665da9a551f55f4ecaf7291fa39a98]
+
+=== [22:02:13] Full image reference for the Deployment ===
+docker.io/lenceneema/kk-payments:1.0.0-c463f43

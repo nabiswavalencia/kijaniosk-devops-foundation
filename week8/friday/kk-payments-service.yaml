@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: kk-payments-service
+  labels:
+    app: kk-payments
+spec:
+  type: NodePort                    # lab access only; production would use ClusterIP behind an Ingress
+  selector:
+    app: kk-payments                # same label as the Deployment's Pod template
+  ports:
+    - name: http
+      protocol: TCP
+      port: 3001                    # Service port inside the cluster
+      targetPort: 3001              # containerPort on the Pods
+      nodePort: 30001               # external access: <minikube ip>:30001

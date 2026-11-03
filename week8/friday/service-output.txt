@@ -1,0 +1,28 @@
+# kk-payments Service verification
+# Date: 2026-11-03 19:04:46 UTC
+
+=== [22:04:46] Apply ===
+$ k apply -f /home/valencia/kk-week8/week8/friday/kk-payments-service.yaml
+service/kk-payments-service created
+(exit 0)
+
+=== [22:04:50] Service ===
+NAME                  TYPE       CLUSTER-IP     EXTERNAL-IP   PORT(S)          AGE
+kk-payments-service   NodePort   10.111.78.79   <none>        3001:30001/TCP   3s
+
+=== [22:04:50] Endpoints (expected: two Pod IPs) ===
+Warning: v1 Endpoints is deprecated in v1.33+; use discovery.k8s.io/v1 EndpointSlice
+NAME                  ENDPOINTS                         AGE
+kk-payments-service   10.244.0.3:3001,10.244.0.4:3001   3s
+NAME                           READY   STATUS    RESTARTS   AGE    IP           NODE       NOMINATED NODE   READINESS GATES
+kk-payments-58f64fdf78-4r4fp   1/1     Running   0          108s   10.244.0.3   minikube   <none>           <none>
+kk-payments-58f64fdf78-kj2sr   1/1     Running   0          108s   10.244.0.4   minikube   <none>           <none>
+
+=== [22:04:50] External access through the NodePort ===
+$ curl http://192.168.49.2:30001/health
+{"status":"ok","service":"kk-payments","version":"1.0.0-c463f43"}
+PASS: version 1.0.0-c463f43 matches the deployed tag
+
+=== [22:04:50] In-cluster DNS (from inside a running Pod) ===
+$ kubectl exec pod/kk-payments-58f64fdf78-4r4fp -- wget -qO- http://kk-payments-service.default.svc.cluster.local:3001/health
+{"status":"ok","service":"kk-payments","version":"1.0.0-c463f43"}
