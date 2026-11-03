@@ -1,7 +1,7 @@
 # Week 7 and Week 8 Delivery: What Changed and Why It Matters
 
 **For:** Nia, ahead of Monday's board presentation
-**From:** Valencia Neema (Amina's role on the KijaniKiosk team)
+**From:** Valencia Neema
 
 ## The short version
 
@@ -9,8 +9,8 @@ In Week 7 we copied the payments service onto a server prepared in advance and k
 
 Two measured results from this week's evidence:
 
-- **Recovery without a person:** when we deliberately removed one running copy of the service, a replacement was running and ready in **{{SELF_HEAL_SECONDS}} seconds**. The second copy kept answering customers the whole time.
-- **A smaller package:** the first, unoptimised package was **{{BASELINE_MB}} MB**. The production package is **{{PROD_MB}} MB**, a **{{REDUCTION_PCT}}% reduction**.
+- **Recovery without a person:** when we deliberately removed one running copy of the service, a replacement was running and ready in **about 1 second**. The second copy kept answering customers the whole time: all 8 test requests sent during the swap succeeded.
+- **A smaller package:** the first, unoptimised package was **281.8 MB**. The production package is **86.6 MB**, a **69% reduction**.
 
 ## Side by side
 
@@ -18,7 +18,7 @@ Two measured results from this week's evidence:
 |---|---|---|
 | **Deployment mechanism** | A deploy script fetched a versioned tarball, unpacked it into the idle environment (blue on port 3000 or green on port 3001) and restarted its systemd unit. Node.js, users and directories had to exist on the VM already, put there by Ansible. | A multi-stage Dockerfile builds an image that contains Node.js and the app. The image is pushed to a private Docker Hub repository with an immutable `<semver>-<git-sha>` tag, and a Deployment manifest declares which tag should run. |
 | **Rollback mechanism** | `rollback.sh` rewrites the nginx include file to point back at the previous environment and reloads nginx. A post-deploy monitor triggers it after three failed health checks; the design target was under 90 seconds. | Change the image tag in the Deployment back to the previous version and apply it (or `kubectl rollout undo`). Every previous version stays in the registry under its own tag, so any earlier build can be redeployed, not only the last one. |
-| **Failure recovery** | systemd restarts a crashed process on the same VM. If the VM itself fails, both environments are lost until someone provisions and configures a new server. | The Deployment controller keeps 2 replicas. A deleted or crashed Pod is replaced automatically ({{SELF_HEAL_SECONDS}} s measured), while the Service keeps routing to the healthy replica. On a multi-node cluster, Pods are rescheduled onto healthy nodes. |
+| **Failure recovery** | systemd restarts a crashed process on the same VM. If the VM itself fails, both environments are lost until someone provisions and configures a new server. | The Deployment controller keeps 2 replicas. A deleted or crashed Pod is replaced automatically (about 1 s measured), while the Service keeps routing to the healthy replica. |
 | **Scaling** | Adding capacity means provisioning another VM, running Ansible on it, deploying the tarball and updating the proxy. Each environment is fixed to one port on one machine. | Change `replicas` and apply. Resource requests and limits (64Mi to 256Mi memory, 100m to 500m CPU per Pod) let the scheduler place new copies safely and stop one copy from starving the others. |
 
 ## What this means for the business

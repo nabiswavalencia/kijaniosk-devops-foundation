@@ -1,0 +1,35 @@
+# kk-payments self-healing measurement (fresh deployment)
+# Date: 2026-11-03 19:05:02 UTC
+
+=== [22:05:02] Pods before ===
+NAME                           READY   STATUS    RESTARTS   AGE
+kk-payments-58f64fdf78-4r4fp   1/1     Running   0          2m
+kk-payments-58f64fdf78-kj2sr   1/1     Running   0          2m
+T0 (Pod deleted): 22:05:05   pod/kk-payments-58f64fdf78-4r4fp
+pod "kk-payments-58f64fdf78-4r4fp" deleted from default namespace
+T1 (replacement Running and Ready): 22:05:06   pod/kk-payments-58f64fdf78-mmnsq
+Recovery time: 1 seconds
+
+=== [22:05:09] kubectl get pods -w (timestamped) ===
+[22:05:02] NAME                           READY   STATUS    RESTARTS   AGE
+[22:05:02] kk-payments-58f64fdf78-4r4fp   1/1     Running   0          2m
+[22:05:02] kk-payments-58f64fdf78-kj2sr   1/1     Running   0          2m
+[22:05:05] kk-payments-58f64fdf78-4r4fp   1/1     Terminating   0          2m3s
+[22:05:05] kk-payments-58f64fdf78-mmnsq   0/1     Pending       0          0s
+[22:05:05] kk-payments-58f64fdf78-4r4fp   1/1     Terminating   0          2m3s
+[22:05:05] kk-payments-58f64fdf78-mmnsq   0/1     Pending       0          0s
+[22:05:05] kk-payments-58f64fdf78-mmnsq   0/1     ContainerCreating   0          0s
+[22:05:06] kk-payments-58f64fdf78-mmnsq   0/1     ContainerCreating   0          1s
+[22:05:06] kk-payments-58f64fdf78-mmnsq   1/1     Running             0          1s
+
+=== [22:05:09] Pods after ===
+NAME                           READY   STATUS        RESTARTS   AGE
+kk-payments-58f64fdf78-4r4fp   1/1     Terminating   0          2m7s
+kk-payments-58f64fdf78-kj2sr   1/1     Running       0          2m7s
+kk-payments-58f64fdf78-mmnsq   1/1     Running       0          4s
+NAME          READY   UP-TO-DATE   AVAILABLE   AGE
+kk-payments   2/2     2            2           2m7s
+
+=== [22:05:09] Service probe during the deletion (one request per second through the NodePort) ===
+8/8 requests returned 200 while the Pod was replaced
+(no failed requests)

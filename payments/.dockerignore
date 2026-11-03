@@ -1,0 +1,30 @@
+# Build context for kk-payments images (copied to payments/.dockerignore by run-week8.sh)
+
+# Dependencies are installed inside the image; host copies only bloat the context
+node_modules/
+
+# Version control metadata
+.git/
+.gitignore
+
+# Tests and their output: not needed to build or run the service
+tests/
+*.test.js
+coverage/
+test-results/
+
+# Secrets and local config must never enter an image
+.env
+.env.*
+.npmrc
+*.key
+*.pem
+
+# Compiled output is produced inside the builder stage, never copied from the host
+dist/
+
+# Not needed at runtime
+README.md
+*.md
+*.tgz
+eslint.config.js

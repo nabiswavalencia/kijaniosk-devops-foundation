@@ -21,7 +21,7 @@ spec:
         - name: kk-payments
           # Full registry address and immutable <semver>-<git-sha> tag.
           # run-week8.sh writes the tag it pushed; it must match registry-push.txt exactly.
-          image: docker.io/DOCKERHUB_USER/kk-payments:IMAGE_TAG
+          image: docker.io/lenceneema/kk-payments:1.0.0-c463f43
           imagePullPolicy: IfNotPresent
           ports:
             - name: http

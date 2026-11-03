@@ -124,21 +124,32 @@ phase_build() {
       --build-arg APP_VERSION="${IMAGE_TAG}" \
       -t "${LOCAL_REPO}:${IMAGE_TAG}" "${APP_DIR}" || fail "production build failed"
 
+    IMG="${LOCAL_REPO}:${IMAGE_TAG}"
     say "docker images"
     docker images | head -1
     docker images | grep kk-payments
+    echo
+    echo "Note: this Docker uses the containerd image store. DISK USAGE counts the unpacked"
+    echo "layers plus the compressed layer blobs kept beside them, so it is larger than the"
+    echo "image itself. CONTENT SIZE is the compressed size pulled over the network. The size"
+    echo "of the image filesystem is measured directly below."
 
-    BASE_B=$(docker image inspect -f '{{.Size}}' "${BASELINE_TAG}")
-    PROD_B=$(docker image inspect -f '{{.Size}}' "${LOCAL_REPO}:${IMAGE_TAG}")
+    say "Layer sizes (docker history, uncompressed)"
+    docker history --format 'table {{.Size}}\t{{.CreatedBy}}' "${IMG}" | cut -c1-110
+
+    # Unpacked filesystem size: what a node stores and a container runs
+    fs_bytes() { docker run --rm --user root --entrypoint "" "$1" du -sxk / | awk '{ print $1 * 1024 }'; }
+    BASE_B=$(fs_bytes "${BASELINE_TAG}")
+    PROD_B=$(fs_bytes "${IMG}")
     PCT=$(awk -v a="${BASE_B}" -v b="${PROD_B}" 'BEGIN { printf "%.0f", (a-b)*100/a }')
     echo
-    echo "Baseline single-stage: $(mb "${BASE_B}") MB (${BASE_B} bytes)"
-    echo "Production two-stage:  $(mb "${PROD_B}") MB (${PROD_B} bytes)"
+    echo "Image filesystem size, measured with: docker run --rm --user root IMAGE du -sxk /"
+    echo "Baseline single-stage: $(mb "${BASE_B}") MB"
+    echo "Production two-stage:  $(mb "${PROD_B}") MB"
     echo "Reduction:             ${PCT}%"
 
-    IMG="${LOCAL_REPO}:${IMAGE_TAG}"
     say "TEST 1: image under 100MB"
-    if [ "${PROD_B}" -lt 100000000 ]; then echo "PASS: $(mb "${PROD_B}") MB"; else echo "FAIL: $(mb "${PROD_B}") MB"; fi
+    if [ "${PROD_B}" -lt 100000000 ]; then echo "PASS: $(mb "${PROD_B}") MB unpacked"; else echo "FAIL: $(mb "${PROD_B}") MB unpacked"; fi
 
     say "TEST 2: runs as non-root"
     echo "\$ docker run --rm ${IMG} whoami"
@@ -355,9 +366,11 @@ phase_audit() {
     say "Check 2: token value anywhere in git history"
     if [ -n "${TOKEN}" ]; then [ -n "$(git log --all -S"${TOKEN}" --oneline)" ] && echo "FAIL" || echo "PASS: no commits contain it"; else echo "SKIPPED"; fi
     say "Check 3: Docker Hub token pattern (dckr_pat_) in tracked files"
-    git grep -n 'dckr_pat_' && echo "FAIL" || echo "PASS: no matches"
+    # Real tokens are dckr_pat_ followed by 20+ token characters; this line itself does not match
+    git grep -nE 'dckr_pat_[A-Za-z0-9_-]{20,}' && echo "FAIL" || echo "PASS: no matches"
     say "Check 4: no literal password/token values in the manifests"
-    grep -niE 'password|token|secret' week8/friday/*.yaml | grep -v 'kijani-registry-credentials' && echo "FAIL" || echo "PASS: only the Secret name is referenced"
+    grep -niE 'password|token|secret' week8/friday/*.yaml | grep -viE 'imagePullSecrets|kijani-registry-credentials' \
+      && echo "FAIL" || echo "PASS: only the Secret name is referenced (imagePullSecrets: kijani-registry-credentials)"
     say "Check 5: no Docker config, .env or .npmrc committed"
     git ls-files | grep -E '(^|/)(config\.json|\.env|\.npmrc)$' && echo "FAIL" || echo "PASS: none tracked"
   } 2>&1 | tee "${OUT}/credential-audit.txt"

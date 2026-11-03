@@ -1,0 +1,21 @@
+
+=== [21:49:16] Clearing exploratory kk-payments resources ===
+$ k delete deployment kk-payments --ignore-not-found
+(exit 0)
+$ k delete service kk-payments-service --ignore-not-found
+(exit 0)
+
+=== [21:49:19] Namespace check (expected: No resources found) ===
+No resources found in default namespace.
+
+=== [21:49:19] ImagePullSecret check (expected: present; create it with the 'secret' phase if not) ===
+Error from server (NotFound): secrets "kijani-registry-credentials" not found
+
+=== [21:49:20] Removing locally cached kk-payments images (cold build and pull) ===
+kijanikiosk/kk-payments:1.0.0-c463f43                                                    efb4e616f0cf        124MB           32MB        
+kijanikiosk/kk-payments:baseline-single-stage                                            aa01f3129a7a        370MB         87.8MB        
+Untagged: kijanikiosk/kk-payments:baseline-single-stage
+Deleted: sha256:aa01f3129a7ab05372cc366a90382a068d374cf2a99b50b717db56a0e14b72d2
+Untagged: kijanikiosk/kk-payments:1.0.0-c463f43
+Deleted: sha256:efb4e616f0cf0ae1ff204616248c88d06bb5dfe63c518f4afb8ea220c0a72a55
+(no kk-payments images remain)
