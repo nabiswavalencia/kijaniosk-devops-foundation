@@ -1,0 +1,11 @@
+---
+service_name: kk-logs
+service_description: KijaniKiosk Log Aggregator
+service_port: 3002
+service_code_dir: logs
+service_entry: aggregator.js
+service_rw_paths:
+  - "{{ kk_base }}/shared/logs"
+service_env:
+  logs.env:
+    LOGS_RETENTION_DAYS: 14

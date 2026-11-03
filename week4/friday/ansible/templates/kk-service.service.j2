@@ -1,0 +1,36 @@
+# Managed by Ansible for {{ inventory_hostname }}. Manual edits are overwritten.
+[Unit]
+Description={{ service_description }}
+After=network-online.target
+Wants=network-online.target
+StartLimitIntervalSec=60
+StartLimitBurst=3
+
+[Service]
+Type=simple
+User={{ service_name }}
+Group={{ service_name }}
+WorkingDirectory={{ kk_base }}/{{ service_code_dir }}
+ExecStart=/usr/bin/node {{ kk_base }}/{{ service_code_dir }}/{{ service_entry }}
+{% if service_reload %}
+ExecReload=/bin/kill -HUP $MAINPID
+{% endif %}
+Restart=on-failure
+RestartSec=5s
+{% for env_file in service_env %}
+EnvironmentFile={{ kk_base }}/config/{{ env_file }}
+{% endfor %}
+Environment=NODE_ENV=production
+Environment=PORT={{ service_port }}
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier={{ service_name }}
+{% for directive in service_hardening %}
+{{ directive }}
+{% endfor %}
+{% for rw_path in service_rw_paths %}
+ReadWritePaths={{ rw_path }}
+{% endfor %}
+
+[Install]
+WantedBy=multi-user.target

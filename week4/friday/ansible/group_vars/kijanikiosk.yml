@@ -1,0 +1,82 @@
+---
+# Connection: must match Terraform's ssh_public_key_path (Challenge B)
+ansible_user: ubuntu
+ansible_ssh_private_key_file: ~/.ssh/id_rsa
+
+# Layout and identities (Week 3 access model)
+kk_base: /opt/kijanikiosk
+app_group: kijanikiosk
+service_accounts:
+  - kk-api
+  - kk-payments
+  - kk-logs
+operator_user: ubuntu   # Week 3 used "amina"; on Multipass the operator account is ubuntu
+
+# Phase 1: packages (pins carried over from Week 3)
+base_packages:
+  - curl
+  - gnupg
+  - acl
+  - ufw
+  - ca-certificates
+  - logrotate
+nginx_version: "1.18.0-6ubuntu14.21"
+node_major: 20
+node_version: "20.20.2-1nodesource1"
+pinned_packages:
+  - nginx
+  - nodejs
+
+# Phase 3: directories (owners and modes before ACLs, so chmod never rewrites the mask)
+kk_directories:
+  - { path: "{{ kk_base }}", owner: root, group: root, mode: "0755" }
+  - { path: "{{ kk_base }}/shared", owner: root, group: root, mode: "0755" }
+  - { path: "{{ kk_base }}/scripts", owner: root, group: root, mode: "0750" }
+  - { path: "{{ kk_base }}/api", owner: kk-api, group: kk-api, mode: "0750" }
+  - { path: "{{ kk_base }}/payments", owner: kk-payments, group: kk-payments, mode: "0750" }
+  - { path: "{{ kk_base }}/logs", owner: kk-logs, group: kk-logs, mode: "0750" }
+  - { path: "{{ kk_base }}/config", owner: root, group: "{{ app_group }}", mode: "0750" }
+  - { path: "{{ kk_base }}/health", owner: root, group: "{{ app_group }}", mode: "0750" }
+  - { path: "{{ kk_base }}/shared/logs", owner: kk-logs, group: kk-logs, mode: "2770" }
+
+shared_logs_acl:
+  - { entity: kk-api, permissions: rwx }
+  - { entity: kk-payments, permissions: r-x }
+  - { entity: "{{ operator_user }}", permissions: r-x }
+
+# Phase 4: systemd hardening shared by every service (Week 3 kk-api / kk-logs set)
+common_hardening:
+  - NoNewPrivileges=true
+  - PrivateTmp=true
+  - ProtectSystem=strict
+  - ProtectHome=true
+  - CapabilityBoundingSet=
+  - ProtectKernelTunables=true
+  - ProtectKernelModules=true
+  - ProtectKernelLogs=true
+  - ProtectControlGroups=true
+  - ProtectClock=true
+  - ProtectHostname=true
+  - PrivateDevices=true
+  - RestrictNamespaces=true
+  - RestrictRealtime=true
+  - RestrictSUIDSGID=true
+  - LockPersonality=true
+  - SystemCallArchitectures=native
+  - RemoveIPC=true
+  - RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX
+  - UMask=0077
+service_hardening: "{{ common_hardening }}"
+service_reload: false
+service_rw_paths: []
+
+# Phase 5: firewall
+monitoring_cidr: 10.0.1.0/24
+# Multipass bridge subnet the VM sits on; the host running Ansible is on it (Challenge C)
+admin_cidr: "{{ ansible_facts['default_ipv4']['network'] }}/{{ ansible_facts['default_ipv4']['prefix'] }}"
+
+# Phases 6 and 7: journal and logrotate
+journal_max_use: 500M
+journal_max_file_size: 50M
+logrotate_keep: 14
+logrotate_service: kk-logs

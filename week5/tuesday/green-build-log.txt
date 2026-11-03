@@ -1,0 +1,163 @@
+Started by an SCM change
+Obtained Jenkinsfile from git https://github.com/nabiswavalencia/kijaniosk-devops-foundation.git
+[Pipeline] Start of Pipeline
+[Pipeline] node
+Running on Jenkins in /var/lib/jenkins/workspace/kijanikiosk-payments
+[Pipeline] {
+[Pipeline] stage
+[Pipeline] { (Declarative: Checkout SCM)
+[Pipeline] checkout
+Selected Git installation does not exist. Using Default
+The recommended git tool is: NONE
+No credentials specified
+Cloning the remote Git repository
+Cloning repository https://github.com/nabiswavalencia/kijaniosk-devops-foundation.git
+ > git init /var/lib/jenkins/workspace/kijanikiosk-payments # timeout=10
+Fetching upstream changes from https://github.com/nabiswavalencia/kijaniosk-devops-foundation.git
+ > git --version # timeout=10
+ > git --version # 'git version 2.43.0'
+ > git fetch --tags --force --progress -- https://github.com/nabiswavalencia/kijaniosk-devops-foundation.git +refs/heads/*:refs/remotes/origin/* # timeout=10
+ > git config remote.origin.url https://github.com/nabiswavalencia/kijaniosk-devops-foundation.git # timeout=10
+ > git config --add remote.origin.fetch +refs/heads/*:refs/remotes/origin/* # timeout=10
+Avoid second fetch
+ > git rev-parse refs/remotes/origin/feature/week5-ci-pipeline^{commit} # timeout=10
+Checking out Revision cebbb26cd0b05e00a5e7b2a4ba4eb8d7e6aa84dc (refs/remotes/origin/feature/week5-ci-pipeline)
+ > git config core.sparsecheckout # timeout=10
+ > git checkout -f cebbb26cd0b05e00a5e7b2a4ba4eb8d7e6aa84dc # timeout=10
+Commit message: "test: remove deliberate failure - CI pipeline verified green/red/green"
+ > git rev-list --no-walk d26099152441ba90bde63c5be8b8aa6093143ca7 # timeout=10
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] withEnv
+[Pipeline] {
+[Pipeline] withEnv
+[Pipeline] {
+[Pipeline] timeout
+Timeout set to expire in 15 min
+[Pipeline] {
+[Pipeline] stage
+[Pipeline] { (Build)
+[Pipeline] dir
+Running in /var/lib/jenkins/workspace/kijanikiosk-payments/payments
+[Pipeline] {
+[Pipeline] echo
+Installing dependencies for kijanikiosk-payments...
+[Pipeline] sh
++ npm ci
+npm WARN EBADENGINE Unsupported engine {
+npm WARN EBADENGINE   package: 'brace-expansion@5.0.12',
+npm WARN EBADENGINE   required: { node: '20 || >=22' },
+npm WARN EBADENGINE   current: { node: 'v18.19.1', npm: '9.2.0' }
+npm WARN EBADENGINE }
+npm WARN EBADENGINE Unsupported engine {
+npm WARN EBADENGINE   package: 'jest-junit@17.0.0',
+npm WARN EBADENGINE   required: { node: '>=20.0.0' },
+npm WARN EBADENGINE   current: { node: 'v18.19.1', npm: '9.2.0' }
+npm WARN EBADENGINE }
+npm WARN EBADENGINE Unsupported engine {
+npm WARN EBADENGINE   package: 'lru-cache@11.5.3',
+npm WARN EBADENGINE   required: { node: '20 || >=22' },
+npm WARN EBADENGINE   current: { node: 'v18.19.1', npm: '9.2.0' }
+npm WARN EBADENGINE }
+npm WARN EBADENGINE Unsupported engine {
+npm WARN EBADENGINE   package: 'brace-expansion@5.0.12',
+npm WARN EBADENGINE   required: { node: '20 || >=22' },
+npm WARN EBADENGINE   current: { node: 'v18.19.1', npm: '9.2.0' }
+npm WARN EBADENGINE }
+npm WARN deprecated glob@10.5.0: Old versions of glob are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
+npm WARN deprecated eslint@9.39.5: This version is no longer supported. Please see https://eslint.org/version-support for other options.
+
+added 428 packages, and audited 429 packages in 8s
+
+85 packages are looking for funding
+  run `npm fund` for details
+
+19 moderate severity vulnerabilities
+
+To address issues that do not require attention, run:
+  npm audit fix
+
+To address all issues (including breaking changes), run:
+  npm audit fix --force
+
+Run `npm audit` for details.
+[Pipeline] sh
++ npm run build
+
+> kijanikiosk-payments@1.0.0 build
+> node scripts/build.js
+
+Built 3 files into dist/
+[Pipeline] sh
++ set -e
++ test -d dist
++ ls dist
++ wc -l
++ echo Build output: 3 files in dist/
+Build output: 3 files in dist/
+[Pipeline] }
+[Pipeline] // dir
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Test)
+[Pipeline] dir
+Running in /var/lib/jenkins/workspace/kijanikiosk-payments/payments
+[Pipeline] {
+[Pipeline] sh
++ set -e
++ npm test
+
+> kijanikiosk-payments@1.0.0 test
+> jest
+
+PASS tests/payments.test.js
+  validatePayment
+    ✓ accepts a valid payment (2 ms)
+    ✓ rejects a zero amount
+    ✓ rejects a decimal amount
+    ✓ rejects a badly formatted phone number (1 ms)
+    ✓ rejects a missing body
+
+Test Suites: 1 passed, 1 total
+Tests:       5 passed, 5 total
+Snapshots:   0 total
+Time:        0.186 s, estimated 1 s
+Ran all test suites.
+[Pipeline] }
+[Pipeline] // dir
+Post stage
+[Pipeline] junit
+Recording test results
+[Checks API] No suitable checks publisher found.
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Archive)
+[Pipeline] archiveArtifacts
+Archiving artifacts
+Recording fingerprints
+[Pipeline] echo
+Artifact archived. Download from: http://localhost:8080/job/kijanikiosk-payments/7/artifact/
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Declarative: Post Actions)
+[Pipeline] cleanWs
+[WS-CLEANUP] Deleting project workspace...
+[WS-CLEANUP] Deferred wipeout is used...
+[WS-CLEANUP] done
+[Pipeline] echo
+Pipeline succeeded: kijanikiosk-payments build 7
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] }
+[Pipeline] // timeout
+[Pipeline] }
+[Pipeline] // withEnv
+[Pipeline] }
+[Pipeline] // withEnv
+[Pipeline] }
+[Pipeline] // node
+[Pipeline] End of Pipeline
+Finished: SUCCESS

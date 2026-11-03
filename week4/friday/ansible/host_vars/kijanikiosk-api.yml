@@ -1,0 +1,15 @@
+---
+service_name: kk-api
+service_description: KijaniKiosk API Service
+service_port: 3000
+service_code_dir: api
+service_entry: server.js
+service_reload: true
+service_rw_paths:
+  - "{{ kk_base }}/shared/logs"
+service_env:
+  db.env:
+    DB_HOST: 127.0.0.1
+    DB_NAME: kijanikiosk
+  api.env:
+    API_LOG_LEVEL: info

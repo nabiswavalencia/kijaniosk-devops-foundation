@@ -1,0 +1,88 @@
+module.app_server["payments"].null_resource.this: Refreshing state... [id=8724889991364113659]
+module.app_server["api"].null_resource.this: Refreshing state... [id=5758934781844785641]
+module.app_server["logs"].null_resource.this: Refreshing state... [id=292365825346693064]
+module.app_server["api"].data.external.ip: Reading...
+module.app_server["payments"].data.external.ip: Reading...
+module.app_server["logs"].data.external.ip: Reading...
+module.app_server["payments"].data.external.ip: Read complete after 0s [id=-]
+module.app_server["api"].data.external.ip: Read complete after 0s [id=-]
+module.app_server["logs"].data.external.ip: Read complete after 0s [id=-]
+
+Terraform used the selected providers to generate the following execution
+plan. Resource actions are indicated with the following symbols:
+  - destroy
+
+Terraform will perform the following actions:
+
+  # module.app_server["api"].null_resource.this will be destroyed
+  - resource "null_resource" "this" {
+      - id       = "5758934781844785641" -> null
+      - triggers = {
+          - "cpus"     = "1"
+          - "disk"     = "5G"
+          - "image"    = "22.04"
+          - "init_sha" = "dbb963cb58a6cd81068f4783969c500dca1ae03904ca29123347a6840dcdcb32"
+          - "memory"   = "1G"
+          - "name"     = "kijanikiosk-api"
+        } -> null
+    }
+
+  # module.app_server["logs"].null_resource.this will be destroyed
+  - resource "null_resource" "this" {
+      - id       = "292365825346693064" -> null
+      - triggers = {
+          - "cpus"     = "1"
+          - "disk"     = "5G"
+          - "image"    = "22.04"
+          - "init_sha" = "dbb963cb58a6cd81068f4783969c500dca1ae03904ca29123347a6840dcdcb32"
+          - "memory"   = "1G"
+          - "name"     = "kijanikiosk-logs"
+        } -> null
+    }
+
+  # module.app_server["payments"].null_resource.this will be destroyed
+  - resource "null_resource" "this" {
+      - id       = "8724889991364113659" -> null
+      - triggers = {
+          - "cpus"     = "1"
+          - "disk"     = "5G"
+          - "image"    = "22.04"
+          - "init_sha" = "dbb963cb58a6cd81068f4783969c500dca1ae03904ca29123347a6840dcdcb32"
+          - "memory"   = "1G"
+          - "name"     = "kijanikiosk-payments"
+        } -> null
+    }
+
+Plan: 0 to add, 0 to change, 3 to destroy.
+
+Changes to Outputs:
+  - ansible_inventory = <<-EOT
+        [kijanikiosk]
+        kijanikiosk-api ansible_host=10.198.60.184
+        kijanikiosk-logs ansible_host=10.198.60.39
+        kijanikiosk-payments ansible_host=10.198.60.223
+    EOT -> null
+  - server_ips        = {
+      - api      = "10.198.60.184"
+      - logs     = "10.198.60.39"
+      - payments = "10.198.60.223"
+    } -> null
+  - ssh_commands      = {
+      - api      = "ssh -i ~/.ssh/id_rsa ubuntu@10.198.60.184"
+      - logs     = "ssh -i ~/.ssh/id_rsa ubuntu@10.198.60.39"
+      - payments = "ssh -i ~/.ssh/id_rsa ubuntu@10.198.60.223"
+    } -> null
+module.app_server["payments"].null_resource.this: Destroying... [id=8724889991364113659]
+module.app_server["logs"].null_resource.this: Destroying... [id=292365825346693064]
+module.app_server["api"].null_resource.this: Destroying... [id=5758934781844785641]
+module.app_server["logs"].null_resource.this: Provisioning with 'local-exec'...
+module.app_server["payments"].null_resource.this: Provisioning with 'local-exec'...
+module.app_server["logs"].null_resource.this (local-exec): Executing: ["/bin/sh" "-c" "multipass delete --purge kijanikiosk-logs"]
+module.app_server["payments"].null_resource.this (local-exec): Executing: ["/bin/sh" "-c" "multipass delete --purge kijanikiosk-payments"]
+module.app_server["api"].null_resource.this: Provisioning with 'local-exec'...
+module.app_server["api"].null_resource.this (local-exec): Executing: ["/bin/sh" "-c" "multipass delete --purge kijanikiosk-api"]
+module.app_server["api"].null_resource.this: Destruction complete after 1s
+module.app_server["logs"].null_resource.this: Destruction complete after 2s
+module.app_server["payments"].null_resource.this: Destruction complete after 2s
+
+Destroy complete! Resources: 3 destroyed.

@@ -1,0 +1,18 @@
+# Managed by Ansible for {{ inventory_hostname }}.
+# su: logrotate refuses to rotate in a group-writable directory unless told which user to act as.
+# create 660 kk-logs kk-logs: mode 660 keeps the ACL mask at rw-, so kk-api keeps write access;
+# group kk-logs (not {{ app_group }}) stops kk-payments gaining write through the group.
+{{ kk_base }}/shared/logs/*.log {
+    su kk-logs kk-logs
+    daily
+    rotate {{ logrotate_keep }}
+    missingok
+    notifempty
+    compress
+    delaycompress
+    create 660 kk-logs kk-logs
+    sharedscripts
+    postrotate
+        systemctl try-reload-or-restart {{ logrotate_service }}.service >/dev/null 2>&1 || true
+    endscript
+}
